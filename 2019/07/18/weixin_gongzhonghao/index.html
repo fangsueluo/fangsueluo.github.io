@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="基于有了openid才能进行后续操作的功能，可以采用发布订阅模式进行通知；如果用户拒绝授权，可以在需要授权的操作之前多次让用户进行授权，否则无法进行下一步操作，直到用户愿意授权拿到授权信息为止。  1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）https://github.com/HADB/GetWeixinCode 2、ngrok内网穿透 本地调试下载ngrok">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信公众号开发">
+<meta property="og:url" content="http://yoursite.com/2019/07/18/weixin_gongzhonghao/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="基于有了openid才能进行后续操作的功能，可以采用发布订阅模式进行通知；如果用户拒绝授权，可以在需要授权的操作之前多次让用户进行授权，否则无法进行下一步操作，直到用户愿意授权拿到授权信息为止。  1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）https://github.com/HADB/GetWeixinCode 2、ngrok内网穿透 本地调试下载ngrok">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/12/19/167c61e51d4abcb4?imageslim">
+<meta property="og:updated_time" content="2019-12-19T13:30:31.351Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信公众号开发">
+<meta name="twitter:description" content="基于有了openid才能进行后续操作的功能，可以采用发布订阅模式进行通知；如果用户拒绝授权，可以在需要授权的操作之前多次让用户进行授权，否则无法进行下一步操作，直到用户愿意授权拿到授权信息为止。  1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）https://github.com/HADB/GetWeixinCode 2、ngrok内网穿透 本地调试下载ngrok">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/12/19/167c61e51d4abcb4?imageslim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/18/weixin_gongzhonghao/">
+
+
+
+
+
+  <title>微信公众号开发 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/18/weixin_gongzhonghao/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微信公众号开发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-18T11:18:04+08:00">
+                2019-07-18
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-12-19T21:30:31+08:00">
+                2019-12-19
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>基于有了openid才能进行后续操作的功能，可以采用发布订阅模式进行通知；如果用户拒绝授权，可以在需要授权的操作之前多次让用户进行授权，否则无法进行下一步操作，直到用户愿意授权拿到授权信息为止。</p>
+</blockquote>
+<h2 id="1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）"><a href="#1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）" class="headerlink" title="1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）"></a>1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）</h2><p><a href="https://github.com/HADB/GetWeixinCode" target="_blank" rel="noopener">https://github.com/HADB/GetWeixinCode</a></p>
+<h2 id="2、ngrok内网穿透-本地调试"><a href="#2、ngrok内网穿透-本地调试" class="headerlink" title="2、ngrok内网穿透 本地调试"></a>2、ngrok内网穿透 本地调试</h2><p>下载ngrok，打开终端，进入ngork目录，执行./ngrok http &lt;端口号&gt;<br>进入微信公众号测试号后台，配置授权域名，    </p>
+<p>此时需要开启一个服务器，用来接收微信服务器发送的信息，启动服务node server.js</p>
+<p>此处用koa2框架调试，server.js：</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const Koa = require(&apos;koa2&apos;);</span><br><span class="line">const sha1 = require(&apos;sha1&apos;);</span><br><span class="line">const app = new Koa()</span><br><span class="line"></span><br><span class="line">const config = &#123;</span><br><span class="line">  appId: &apos;wxc4b8f409cda275c3&apos;,</span><br><span class="line">  appSecret: &apos;9901c6818704b41e93f95c237d01cdac&apos;,</span><br><span class="line">  token: &apos;test&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">app.use(async ctx =&gt; &#123;</span><br><span class="line">  console.log(&apos;访问来了。&apos;)</span><br><span class="line">  console.log(ctx.query)</span><br><span class="line">  const signature = ctx.query.signature,</span><br><span class="line">    timestamp = ctx.query.timestamp,</span><br><span class="line">    nonce = ctx.query.nonce,</span><br><span class="line">    token = config.token;</span><br><span class="line"></span><br><span class="line">  const str = [timestamp, nonce, token].sort().join(&apos;&apos;);</span><br><span class="line">  const result = sha1(str)</span><br><span class="line">  console.log(&apos;str:&apos;, result)</span><br><span class="line">  if(signature === result) &#123;</span><br><span class="line">    return ctx.body = ctx.query.echostr;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(8080)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、redirect-uri域名与后台配置不一致"><a href="#3、redirect-uri域名与后台配置不一致" class="headerlink" title="3、redirect_uri域名与后台配置不一致"></a>3、redirect_uri域名与后台配置不一致</h2><p>此处要配置，且不能有http://</p>
+<blockquote>
+<p>踩坑：<br>scope: snsapi_userinfo 拉取用户信息。<br>会调起用户授权页面，用户可以选择拒绝，由于redirectUri经过编码了，这时候再点击授权时经过编码的redirectUri可能造成不一致，所以要先解码再进行编码。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">getCodeByWx (appid, scope = &apos;snsapi_base&apos;, type = 0) &#123;</span><br><span class="line">  let search = location.search</span><br><span class="line">  let hash = location.hash</span><br><span class="line">  if (search) &#123;</span><br><span class="line">    if (search.indexOf(&apos;code&apos;) &gt;= 0) &#123;</span><br><span class="line">      search = search.replace(/\?code.*end/, &apos;&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">    redirectUri += search</span><br><span class="line">  &#125;</span><br><span class="line">  if (hash) &#123;</span><br><span class="line">    redirectUri += hash</span><br><span class="line">  &#125;</span><br><span class="line">  const sharp = redirectUri.match(/#\//g)</span><br><span class="line">  if (sharp &amp;&amp; sharp.length &gt; 1) &#123;</span><br><span class="line">    redirectUri = redirectUri.replace(/#\//g, &apos;&apos;) + &apos;#/&apos;</span><br><span class="line">  &#125;</span><br><span class="line">  redirectUri = encodeURIComponent(decodeURIComponent(redirectUri))</span><br><span class="line">  const url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=$&#123;appid&#125;&amp;redirect_uri=$&#123;redirectUri&#125;&amp;response_type=code&amp;scope=$&#123;scope&#125;&amp;state=$&#123;type&#125;end#wechat_redirect`</span><br><span class="line">  window.location.replace(url)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function wxAuthorize () &#123;</span><br><span class="line">  const code = getParamsFn(&apos;code&apos;)</span><br><span class="line">  let state = getParamsFn(&apos;state&apos;)</span><br><span class="line">  state = state &amp;&amp; state.substr(0, 1)</span><br><span class="line">  const appId = getStorage(&apos;appId&apos;)</span><br><span class="line">  const openId = getStorage(&apos;openId&apos;)</span><br><span class="line">  if (!appId) &#123;</span><br><span class="line">    handleGetAppId2Code()</span><br><span class="line">      .then(appId =&gt; &#123;</span><br><span class="line">        // 获取到appId后，判断是否有openId</span><br><span class="line">        if (!openId) &#123;</span><br><span class="line">          getCodeByWx(appId, &apos;snsapi_userinfo&apos;, 0)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    if (!openId) &#123;</span><br><span class="line">      if (code) &#123;</span><br><span class="line">        getUserInfo(code)</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        getCodeByWx(appId, &apos;snsapi_userinfo&apos;, 0)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、授权流程"><a href="#4、授权流程" class="headerlink" title="4、授权流程"></a>4、授权流程</h2><p><img src="https://user-gold-cdn.xitu.io/2018/12/19/167c61e51d4abcb4?imageslim" alt="auth.jpg"></p>
+<p>网页授权流程分为四步：</p>
+<p>  1、引导用户进入授权页面同意授权，获取code （前端获取，并发送给后台）</p>
+<p>  2、通过code换取网页授权access_token（与基础支持中的access_token不同）</p>
+<p>  3、如果需要，开发者可以刷新网页授权access_token，避免过期</p>
+<p>  4、通过网页授权access_token和openid获取用户基本信息（支持UnionID机制）</p>
+<h2 id="5、微信支付"><a href="#5、微信支付" class="headerlink" title="5、微信支付"></a>5、微信支付</h2><p>需要去微信公众号后台配置支付目录，支付目录得是**://**/index.html，vue构建的单页面，hash模式需要在 # 前面用 ？将其参数化，否则无法匹配微信支付目录，ios会弹出提示，但是安卓调支付，闪一下就没了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let href = location.href</span><br><span class="line">let wenhaoIndex = href.indexOf(&apos;?&apos;)</span><br><span class="line">let jinhaoIndex = href.indexOf(&apos;#&apos;)</span><br><span class="line">if (wenhaoIndex &lt; 0 || (wenhaoIndex &gt; jinhaoIndex)) &#123;</span><br><span class="line">  href = href.replace(&apos;#&apos;, &apos;?#&apos;)</span><br><span class="line">  window.location.replace(href)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">//从后台拿到签名串后开始调支付</span><br><span class="line">wxPay(JSON.parse(params), (res) =&gt; &#123;</span><br><span class="line">  // 支付回调</span><br><span class="line">  if (res &amp;&amp; res.err_msg === &apos;get_brand_wcpay_request:ok&apos;) &#123;</span><br><span class="line">    state.orderId = data.order_id</span><br><span class="line">  &#125;</span><br><span class="line">  console.log(&apos;支付回调&apos;, res)</span><br><span class="line">  resolve(res)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">function wxPay (params, callback) &#123;</span><br><span class="line">  if (typeof WeixinJSBridge === &apos;undefined&apos;) &#123;</span><br><span class="line">    if (document.addEventListener) &#123;</span><br><span class="line">      document.addEventListener(&apos;WeixinJSBridgeReady&apos;, onBridgeReady, false)</span><br><span class="line">    &#125; else if (document.attachEvent) &#123;</span><br><span class="line">      document.attachEvent(&apos;WeixinJSBridgeReady&apos;, onBridgeReady)</span><br><span class="line">      document.attachEvent(&apos;onWeixinJSBridgeReady&apos;, onBridgeReady)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    onBridgeReady(params, callback)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function onBridgeReady (params, callback) &#123;</span><br><span class="line">  WeixinJSBridge.invoke(</span><br><span class="line">    &apos;getBrandWCPayRequest&apos;,</span><br><span class="line">    params,</span><br><span class="line">    function (res) &#123;</span><br><span class="line">      // console.log(&apos;WeixinJSBridge res.err_msg&apos;, res.err_msg)</span><br><span class="line">      if (callback &amp;&amp; typeof callback === &apos;function&apos;) &#123;</span><br><span class="line">        callback(res)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6、微信分享"><a href="#6、微信分享" class="headerlink" title="6、微信分享"></a>6、微信分享</h2><p>npm install weixin-js-sdk -S</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">import wx from &apos;weixin-js-sdk&apos;;</span><br><span class="line">function initSdk(&#123; appid, timestamp, noncestr, signature, jsApiList &#125;) &#123; // 从后端获取</span><br><span class="line">  sdk.config(&#123;</span><br><span class="line">    debug: process.env.VUE_APP_ENV !== &apos;production&apos;,</span><br><span class="line">    appId: appid,</span><br><span class="line">    timestamp: timestamp,</span><br><span class="line">    nonceStr: noncestr,</span><br><span class="line">    signature: signature,</span><br><span class="line">    jsApiList: jsApiList</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import &#123; getTicket &#125; from &apos;@/utils/lib/wechat/helper&apos;; // 签名接口</span><br><span class="line">import &#123; initSdk &#125; from &apos;@/utils/lib/wechat/config&apos;;</span><br><span class="line">import sdk from &apos;weixin-js-sdk&apos;;</span><br><span class="line"></span><br><span class="line">// 接口清单</span><br><span class="line">const JS_API_LIST = [&apos;onMenuShareAppMessage&apos;, &apos;onMenuShareTimeline&apos;];</span><br><span class="line"></span><br><span class="line">// 消息分享</span><br><span class="line">function onMenuShareAppMessage(config) &#123;</span><br><span class="line">  const &#123; title, desc, link, imgUrl &#125; = config;</span><br><span class="line">  sdk.onMenuShareAppMessage(&#123; title, desc, link, imgUrl &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 朋友圈分享</span><br><span class="line">function onMenuShareTimeline(config) &#123;</span><br><span class="line">  const &#123; title, link, imgUrl &#125; = config;</span><br><span class="line">  sdk.onMenuShareTimeline(&#123; title, link, imgUrl &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export function share(wechatShareConfig) &#123;</span><br><span class="line">  if (!wechatShareConfig.link) return false;</span><br><span class="line"></span><br><span class="line">  // 签名验证</span><br><span class="line">  getTicket(wechatShareConfig.link).then(res =&gt; &#123;</span><br><span class="line">    // 初始化 `jssdk`</span><br><span class="line">    initSdk(&#123;</span><br><span class="line">      appid: res.appid,</span><br><span class="line">      timestamp: res.timestamp,</span><br><span class="line">      noncestr: res.noncestr,</span><br><span class="line">      signature: res.signature,</span><br><span class="line">      jsApiList: JS_API_LIST</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    sdk.ready(() =&gt; &#123;</span><br><span class="line">      // 初始化目标接口</span><br><span class="line">      onMenuShareAppMessage(wechatShareConfig);</span><br><span class="line">      onMenuShareTimeline(wechatShareConfig);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/17/fangdou-bibao/" rel="next" title="函数防抖及闭包">
+                <i class="fa fa-chevron-left"></i> 函数防抖及闭包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/29/algorithm/" rel="prev" title="算法学习">
+                算法学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）"><span class="nav-number">1.</span> <span class="nav-text">1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、ngrok内网穿透-本地调试"><span class="nav-number">2.</span> <span class="nav-text">2、ngrok内网穿透 本地调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、redirect-uri域名与后台配置不一致"><span class="nav-number">3.</span> <span class="nav-text">3、redirect_uri域名与后台配置不一致</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、授权流程"><span class="nav-number">4.</span> <span class="nav-text">4、授权流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、微信支付"><span class="nav-number">5.</span> <span class="nav-text">5、微信支付</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、微信分享"><span class="nav-number">6.</span> <span class="nav-text">6、微信分享</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="蜗牛般的学习webpack，用到一点记录一点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack学习笔记">
+<meta property="og:url" content="http://yoursite.com/2019/07/15/webpack_note/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="蜗牛般的学习webpack，用到一点记录一点">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-19T13:30:31.351Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack学习笔记">
+<meta name="twitter:description" content="蜗牛般的学习webpack，用到一点记录一点">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/15/webpack_note/">
+
+
+
+
+
+  <title>webpack学习笔记 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/15/webpack_note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-15T18:47:02+08:00">
+                2019-07-15
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-12-19T21:30:31+08:00">
+                2019-12-19
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>蜗牛般的学习webpack，用到一点记录一点</p>
+<a id="more"></a>
+<h3 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h3><h4 id="commonJs-核心思想：通过require方法同步加载依赖的其他模块，通过module-exports导出暴露的接口"><a href="#commonJs-核心思想：通过require方法同步加载依赖的其他模块，通过module-exports导出暴露的接口" class="headerlink" title="commonJs: 核心思想：通过require方法同步加载依赖的其他模块，通过module.exports导出暴露的接口"></a>commonJs: 核心思想：通过require方法同步加载依赖的其他模块，通过module.exports导出暴露的接口</h4><p>例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">导入： const moduleA = require(&apos;./moduleA&apos;)</span><br><span class="line">导出： module.exports = moduleA.someFunc</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="AMD-通过异步方式去加载模块依赖的模块，require-js"><a href="#AMD-通过异步方式去加载模块依赖的模块，require-js" class="headerlink" title="AMD: 通过异步方式去加载模块依赖的模块，require.js"></a>AMD: 通过异步方式去加载模块依赖的模块，require.js</h4><p>例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//定义一个模块</span><br><span class="line">define(&apos;module&apos;, [&apos;dep&apos;], function(dep) &#123;</span><br><span class="line">    return exports;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">//导入和使用</span><br><span class="line">require([&apos;module&apos;], function() &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="ES6模块化"><a href="#ES6模块化" class="headerlink" title="ES6模块化"></a>ES6模块化</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//导入</span><br><span class="line">import &#123;readFile&#125; from &apos;fs&apos;;</span><br><span class="line">import React from &apos;react&apos;;</span><br><span class="line">//导出</span><br><span class="line">export function hello() &#123;&#125;</span><br><span class="line">export default &#123;&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">* * *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### Webpack安装</span><br></pre></td></tr></table></figure>
+
+<p>安装到全局：npm i -g webpack<br>安装稳定版本：npm i -D webpack<br>安装指定版本：npm i -D webpack@<version><br>安装体验版本：npm i -D webpack</version></p>
+<p>运行webpack:<br>1、node_modules/.bin/webpack<br>2、package.json中script: webpack –config webpack.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* * *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 解析css文件模块</span><br><span class="line">webpack一切皆模块，所以引入css文件使用：</span><br><span class="line">`require(&apos;./main.css&apos;)`</span><br><span class="line">webpack不原生支持css解析， 要支持非js的文件，需要使用webpack的Loader机制</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">webpack.config.js：</span><br></pre></td></tr></table></figure>
+
+<p>//在遇到.css结尾的文件时，loader执行顺序由后到前，先使用css-loader读取文件，再由style-loader将css内容注入到js里，minimize告诉css-loader开启压缩<br>module: {<br>    rules: [<br>      {<br>        test: /.css$/,<br>        use: [‘style-loader’, ‘css-loader?minimize’]<br>      }</p>
+<pre><code>  //或者
+  {
+    test: /\.css$/,
+    use: [
+        &apos;style-loader&apos;,
+        {
+            loader: &apos;css-loader&apos;
+            options: {
+                minimize： true
+            }
+        }
+    ]
+  }
+]</code></pre><p>  }</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">由于配置了 minimize： true， 打包出错：options should NOT have additional propertie， 去掉这个属性正常了</span><br><span class="line"></span><br><span class="line">&gt;此时，css样式内容在js文件中，但是页面样式却会生效，原来是style-loader的功劳。</span><br><span class="line">&gt;style-loader大概机制：在js文件中将css的内容包裹在字符串里存储，然后在网页执行js时动态地向html的head标签里插入html style标签</span><br><span class="line"></span><br><span class="line">除了在配置文件里指定loader，也可以在源码中指定loader去处理文件：</span><br><span class="line">`require(&apos;style-loader!css-loader?minimize!./main.css&apos;)`</span><br><span class="line"></span><br><span class="line">#### Plugin</span><br><span class="line">从js文件中提取css内容到单独的文件，需要使用插件</span><br></pre></td></tr></table></figure>
+
+<p>const MiniCssExtractPlugin = require(‘mini-css-extract-plugin’);<br>…<br>rules: [<br>  {<br>    test: /.css$/,<br>    use: [<br>      {<br>        loader: MiniCssExtractPlugin.loader,<br>        options: {<br>          // you can specify a publicPath here<br>          // by default it uses publicPath in webpackOptions.output<br>          publicPath: ‘../‘,<br>          hmr: process.env.NODE_ENV === ‘development’,<br>        },<br>      },<br>      ‘css-loader’,<br>    ],<br>  },<br>]<br>plugins: [<br>    new MiniCssExtractPlugin({<br>      filename: ‘[name].css’,<br>      chunkFilename: ‘[id].css’,<br>    })<br>  ]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### devServer</span><br><span class="line">devServer会启动一个http服务器用于服务网页请求，同时会帮助启动webpack</span><br><span class="line">安装：</span><br><span class="line">package.json中配置</span><br></pre></td></tr></table></figure>
+
+<p>“scripts”: {<br>    “dev”: “webpack –config webpack.config.js”,<br>    “start”: “webpack-dev-server –open”<br>  }</p>
+<pre><code>运行：npm start, 浏览器自动打开本地网页，自动打开归功于--open，否则只能手动输入网址打开页面
+webapck-dev-server会将构建出的文件保存在内存中，它不会理会配置文件中的output.path属性，所以index.html引入js和css时要将url改为&apos;./bundle.js&apos;
+
+&gt;webpack命令启动后，会从entry里配置的module开始，递归解析entry里依赖的所有module，这些模块会以entry为单位分组，一个entry及其所有依赖的module都被分到一个组即一个chunk，最后webpack会将所有chunk转换为文件输出。
+
+&gt;context：`context: path.resolve(__dirname, &apos;app&apos;)`
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/15/publish_subscription/" rel="next" title="发布与订阅">
+                <i class="fa fa-chevron-left"></i> 发布与订阅
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/17/js_futher/" rel="prev" title="js进阶学习">
+                js进阶学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块化"><span class="nav-number">1.</span> <span class="nav-text">模块化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#commonJs-核心思想：通过require方法同步加载依赖的其他模块，通过module-exports导出暴露的接口"><span class="nav-number">1.1.</span> <span class="nav-text">commonJs: 核心思想：通过require方法同步加载依赖的其他模块，通过module.exports导出暴露的接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AMD-通过异步方式去加载模块依赖的模块，require-js"><span class="nav-number">1.2.</span> <span class="nav-text">AMD: 通过异步方式去加载模块依赖的模块，require.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ES6模块化"><span class="nav-number">1.3.</span> <span class="nav-text">ES6模块化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

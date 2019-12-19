@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="git config –global user.name “helen”git config –global user.email “321171337@qq.com“表示你这台机器上所有的Git仓库都会使用这个配置  SSH配置cd ~/.ssh  进入ssh目录ls  查看ssh目录ssh-keygen -t rsa -C “**@qq.com” 一路回车，使用默认值即可  生成sshcat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git笔记">
+<meta property="og:url" content="http://yoursite.com/2019/07/17/git_note/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="git config –global user.name “helen”git config –global user.email “321171337@qq.com“表示你这台机器上所有的Git仓库都会使用这个配置  SSH配置cd ~/.ssh  进入ssh目录ls  查看ssh目录ssh-keygen -t rsa -C “**@qq.com” 一路回车，使用默认值即可  生成sshcat">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-19T13:30:31.350Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git笔记">
+<meta name="twitter:description" content="git config –global user.name “helen”git config –global user.email “321171337@qq.com“表示你这台机器上所有的Git仓库都会使用这个配置  SSH配置cd ~/.ssh  进入ssh目录ls  查看ssh目录ssh-keygen -t rsa -C “**@qq.com” 一路回车，使用默认值即可  生成sshcat">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/17/git_note/">
+
+
+
+
+
+  <title>git笔记 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/17/git_note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">git笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-17T15:10:23+08:00">
+                2019-07-17
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-12-19T21:30:31+08:00">
+                2019-12-19
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>git config –global user.name “helen”<br>git config –global user.email “<a href="mailto:321171337@qq.com" target="_blank" rel="noopener">321171337@qq.com</a>“<br>表示你这台机器上所有的Git仓库都会使用这个配置</p>
+</blockquote>
+<h2 id="SSH配置"><a href="#SSH配置" class="headerlink" title="SSH配置"></a>SSH配置</h2><p>cd ~/.ssh  进入ssh目录<br>ls  查看ssh目录<br>ssh-keygen -t rsa -C “**@qq.com” 一路回车，使用默认值即可  生成ssh<br>cat ~/.ssh/id_rsa.pub 查看ssh<br>将ssh复制到git服务器上的个人设置SSH keys里</p>
+<p>进入项目目录–&gt;git clone git@***.git 克隆项目–&gt;进入克隆的项目的文件夹-&gt;git pull/push等操作可以用了</p>
+<a id="more"></a>
+
+<p>或者<br>git init  初始化该项目为仓库<br>git remote add origin git@***.git  对该项目与远端仓库关联</p>
+<p>将feature分支的修改合并到本地主分支中并上传到远程仓库：<br>git checkout dev—&gt;git merge feature–&gt;git add .—&gt;git commit -m ‘dd’—&gt;git push origin master</p>
+<blockquote>
+<p>将本地分支与远程同名分支关联<br>git push –set-upstream origin <branchname>之后就可以直接使用git push</branchname></p>
+</blockquote>
+<p>git add . 将工作区的修改存到.git版本库的暂存区Stage中<br>git commit -m ‘dd’  将暂存区的修改提交到当前分支中</p>
+<p>git push -u origin master  第一次推送master分支时，加上了-u参数，在以后的推送或者拉取时就可以简化命<br>git branch –set-upstream-to=origin/paging  设置本地分支与远程paging分支关联</p>
+<h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><p>git checkout -b <branchname> 创建分支并切换到该分支<br>git checkout <branchname> 仅是切换到该分支<br>git checkout .<br>git branch <name>创建分支<br>git branch -d <name>删除本地分支<br>git branch -D <name>  强行删除没有被合并过的分支<br>git merge –no-ff -m “描述” <branchname> 合并分支， 禁用Fast forward，并提交一个commit</branchname></name></name></name></branchname></branchname></p>
+<h2 id="删除远程分支"><a href="#删除远程分支" class="headerlink" title="删除远程分支"></a>删除远程分支</h2><p>1) git branch -r -d origin/<branchname><br>    git push origin :<branchname><br>2) git push origin –delete <branchname> </branchname></branchname></branchname></p>
+<h2 id="从远程拉取新的分支"><a href="#从远程拉取新的分支" class="headerlink" title="从远程拉取新的分支"></a>从远程拉取新的分支</h2><p>1）git pull 在任意分支上更新，该操作会把所有分支的变化情况返回<br>     git checkout 新分支名        切换到新分支<br>2）git checkout -b <branchname> origin/<branchname>   创建远程分支branchName到本地，创建本地分支branchName<br>and then :  git pull 更新新分支代码</branchname></branchname></p>
+<h2 id="Bug分支中，stash应用"><a href="#Bug分支中，stash应用" class="headerlink" title="Bug分支中，stash应用"></a>Bug分支中，stash应用</h2><p>git stash   把当前工作现场“储藏”起来<br> git stash list  查看工作现场<br>恢复：1）git stash apply  -&gt; git stash drop<br>   2 ) git stash pop  恢复并删除<br>多次stash情况：git stash list -&gt; git stash apply stash@{0}  恢复指定stash</p>
+<h2 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h2><p>1）文件被修改了，但未执行git add操作(working tree内撤销)<br>git checkout fileName<br>git checkout .<br>2）同时对多个文件执行了git add操作，但本次只想提交其中一部分文件<br>git add *<br>git status</p>
+<h2 id="取消暂存"><a href="#取消暂存" class="headerlink" title="取消暂存"></a>取消暂存</h2><p>git reset HEAD <filename><br>3）文件执行了git add操作，但想撤销对其的修改（index内回滚）</filename></p>
+<p>git reset HEAD fileName</p>
+<h2 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h2><p>git checkout fileName<br>4）修改的文件已被git commit，但想再次修改不再产生新的Commit</p>
+<h2 id="修改最后一次提交"><a href="#修改最后一次提交" class="headerlink" title="修改最后一次提交"></a>修改最后一次提交</h2><p>git add sample.txt<br>git commit –amend -m”说明”<br>5）已在本地进行了多次git commit操作，现在想撤销到其中某次Commit<br>git reset [–hard|soft|mixed|merge|keep] [commit|HEAD]</p>
+<p>git本地分支和远程分支改名</p>
+<h3 id="1-将本地分支进行改名"><a href="#1-将本地分支进行改名" class="headerlink" title="1 将本地分支进行改名"></a>1 将本地分支进行改名</h3><p>git branch -m old_branch new_branch</p>
+<h3 id="2-将远程分支的老分支删除"><a href="#2-将远程分支的老分支删除" class="headerlink" title="2 将远程分支的老分支删除"></a>2 将远程分支的老分支删除</h3><p>git push origin :old_branch</p>
+<h3 id="3-将改名后的分支push到远程"><a href="#3-将改名后的分支push到远程" class="headerlink" title="3 将改名后的分支push到远程"></a>3 将改名后的分支push到远程</h3><p>git push origin new_branch</p>
+<p>git回退到某一版本号<br>git log 查看版本号<br>回退到该版本号: git reset –hard &lt;版本号&gt;<br>git reflog 来查看每一次命令的记录<br>回退到最新分版本号：git reset –hard &lt;版本号&gt;  </p>
+<blockquote>
+<p>丢弃已经add的文件：<br>git checkout .</p>
+</blockquote>
+<blockquote>
+<p>丢弃没有add的文件(untracked)<br>查看将要删除的文件：git clean -nf<br>删除文件及文件夹： git clean -fd</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/17/node_note/" rel="next" title="node学习笔记">
+                <i class="fa fa-chevron-left"></i> node学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/17/much_request_but_one_loading/" rel="prev" title="多并发请求，如何控制唯一的loading关闭">
+                多并发请求，如何控制唯一的loading关闭 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH配置"><span class="nav-number">1.</span> <span class="nav-text">SSH配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支"><span class="nav-number">2.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除远程分支"><span class="nav-number">3.</span> <span class="nav-text">删除远程分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从远程拉取新的分支"><span class="nav-number">4.</span> <span class="nav-text">从远程拉取新的分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bug分支中，stash应用"><span class="nav-number">5.</span> <span class="nav-text">Bug分支中，stash应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#撤销"><span class="nav-number">6.</span> <span class="nav-text">撤销</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消暂存"><span class="nav-number">7.</span> <span class="nav-text">取消暂存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#撤销修改"><span class="nav-number">8.</span> <span class="nav-text">撤销修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改最后一次提交"><span class="nav-number">9.</span> <span class="nav-text">修改最后一次提交</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-将本地分支进行改名"><span class="nav-number">9.1.</span> <span class="nav-text">1 将本地分支进行改名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-将远程分支的老分支删除"><span class="nav-number">9.2.</span> <span class="nav-text">2 将远程分支的老分支删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-将改名后的分支push到远程"><span class="nav-number">9.3.</span> <span class="nav-text">3 将改名后的分支push到远程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
