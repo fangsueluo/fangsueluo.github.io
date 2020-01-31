@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="高级使用联合类型表示一个值可以是几种类型之一,适合于那些值可以为不同类型的情况。我们用竖线（ | ）分隔每个类型，所以 number | string | boolean表示一个值可以是 number， string，或 boolean。当函数的入参或者某个变量，可以是多个不同类型时使用。但是需要注意的是，联合类型的值只能调用所有类型里共有的方法或属性。 1234function padLeft(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="typeScript-入门学习02篇">
+<meta property="og:url" content="http://yoursite.com/2020/01/26/typeScript-入门学习2/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="高级使用联合类型表示一个值可以是几种类型之一,适合于那些值可以为不同类型的情况。我们用竖线（ | ）分隔每个类型，所以 number | string | boolean表示一个值可以是 number， string，或 boolean。当函数的入参或者某个变量，可以是多个不同类型时使用。但是需要注意的是，联合类型的值只能调用所有类型里共有的方法或属性。 1234function padLeft(">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/12/29/16f50661061bc682?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+<meta property="og:updated_time" content="2020-01-31T04:34:03.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="typeScript-入门学习02篇">
+<meta name="twitter:description" content="高级使用联合类型表示一个值可以是几种类型之一,适合于那些值可以为不同类型的情况。我们用竖线（ | ）分隔每个类型，所以 number | string | boolean表示一个值可以是 number， string，或 boolean。当函数的入参或者某个变量，可以是多个不同类型时使用。但是需要注意的是，联合类型的值只能调用所有类型里共有的方法或属性。 1234function padLeft(">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/12/29/16f50661061bc682?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/26/typeScript-入门学习2/">
+
+
+
+
+
+  <title>typeScript-入门学习02篇 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/26/typeScript-入门学习2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">typeScript-入门学习02篇</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-26T17:41:20+08:00">
+                2020-01-26
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-31T12:34:03+08:00">
+                2020-01-31
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="高级使用"><a href="#高级使用" class="headerlink" title="高级使用"></a>高级使用</h1><h3 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h3><p>表示一个值可以是几种类型之一,适合于那些值可以为不同类型的情况。我们用竖线<font color="#FF7F50">（ | ）</font>分隔每个类型，所以 number | string | boolean表示一个值可以是 number， string，或 boolean。当函数的入参或者某个变量，可以是多个不同类型时使用。但是需要注意的是，<font color="#FF7F50"><u>联合类型的值只能调用所有类型里共有的方法或属性</u></font>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">padLeft</span>(<span class="params">value: string, padding: string | number</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> a = string | number</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="交叉类型"><a href="#交叉类型" class="headerlink" title="交叉类型"></a>交叉类型</h3><p>将多个类型合并为一个类型,使用 <font color="#FF7F50">&amp;</font> 符号将多个类型组合在一起,表示结果的类型是所有列出类型的集合。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">type Student = &#123;</span><br><span class="line">    id: string;</span><br><span class="line">    age: number;</span><br><span class="line">&#125;;</span><br><span class="line">type Employee = &#123;</span><br><span class="line">    companyId: string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> person: Student &amp; Employee;</span><br><span class="line">person.age = <span class="number">21</span>; <span class="comment">// ✅</span></span><br><span class="line">person.companyId = <span class="string">'SP302334'</span>; <span class="comment">// ✅</span></span><br><span class="line">person.id = <span class="string">'10033402'</span>; <span class="comment">// ✅</span></span><br><span class="line">person.name = <span class="string">'Henry'</span>; <span class="comment">// ❌ - name does not exist in Student &amp; Employee</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="类型保护与区分类型"><a href="#类型保护与区分类型" class="headerlink" title="类型保护与区分类型"></a>类型保护与区分类型</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">interface Bird &#123;</span><br><span class="line">    fly();</span><br><span class="line">    layEggs();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface Fish &#123;</span><br><span class="line">    swim();</span><br><span class="line">    layEggs();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSmallPet</span>(<span class="params"></span>): <span class="title">Fish</span> | <span class="title">Bird</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> pet = getSmallPet();</span><br></pre></td></tr></table></figure>
+
+<p>联合类型适合于那些值可以为不同类型的情况。 但当我们想确切地了解是否为 Fish时怎么办？<br><font color="#FF7F50">方法1:</font><br>通常使用类型断言，确保这段代码不会报错</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> pet = getSmallPet();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((&lt;Fish&gt;pet).swim) &#123;</span><br><span class="line">    (&lt;Fish&gt;pet).swim();</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">    (&lt;Bird&gt;pet).fly();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color="#FF7F50">方法2:</font><br>但是对于我们判断过的类型，在使用时还要再次判断，就感觉是冗余的麻烦的，所以我们会寻求更好的方法: <font color="#FF7F50"><strong>用户自定义的类型保护</strong></font><br>我们想要的效果是，一次检查类型后续直接知道类型而不需要再检查，就要使用TypeScript里的类型保护机制</p>
+<blockquote>
+<p>谓词为 parameterName is Type这种形式，parameterName必须是来自于当前函数签名里的一个参数名。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFish</span>(<span class="params">pet: Fish | Bird</span>): <span class="title">pet</span> <span class="title">is</span> <span class="title">Fish</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (&lt;Fish&gt;pet).swim !== undefined;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>每当使用一些变量调用 isFish时，<font color="#FF7F50">TypeScript会将变量缩减为那个具体的类型</font>，只要这个类型与变量的原始类型是兼容的。</p>
+</blockquote>
+<blockquote>
+<p><strong>注意TypeScript不仅知道在 if分支里 pet是 Fish类型； 它还清楚在 else分支里，一定 不是 Fish类型，一定是 Bird类型。</strong></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 'swim' 和 'fly' 调用都没有问题了</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (isFish(pet)) &#123;</span><br><span class="line">    pet.swim();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    pet.fly();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="typeof类型保护"><a href="#typeof类型保护" class="headerlink" title="typeof类型保护"></a>typeof类型保护</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFish</span>(<span class="params">pet: Fish | Bird</span>): <span class="title">pet</span> <span class="title">is</span> <span class="title">Fish</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (&lt;Fish&gt;pet).swim !== undefined;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不是必须要像上面一样，定义一个函数来判断类型是否是原始类型，也就是不必将 typeof x === “number”抽象成一个函数，因为TypeScript可以将它识别为一个类型保护<br>可以直接这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">padLeft</span>(<span class="params">value: string, padding: string | number</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> padding === <span class="string">"number"</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Array</span>(padding + <span class="number">1</span>).join(<span class="string">" "</span>) + value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> padding === <span class="string">"string"</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> padding + value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`Expected string or number, got '<span class="subst">$&#123;padding&#125;</span>'.`</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这些* typeof类型保护*只有两种形式能被识别： <font color="#FF7F50">typeof v === “typename”和 typeof v !== “typename”</font>， “typename”必须是 <font color="#FF7F50">“number”， “string”， “boolean”或 “symbol”</font>。 但是TypeScript并不会阻止你与其它字符串比较，语言不会把那些表达式识别为类型保护。</p>
+</blockquote>
+<h3 id="instanceof类型保护"><a href="#instanceof类型保护" class="headerlink" title="instanceof类型保护"></a>instanceof类型保护</h3><p>instanceof类型保护是通过构造函数来细化类型的一种方式。<br>instanceof的右侧要求是一个构造函数，TypeScript将细化为：<br>1、此构造函数的 prototype属性的类型，如果它的类型不为 any的话<br>2、构造签名所返回的类型的联合</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类型为SpaceRepeatingPadder | StringPadder</span></span><br><span class="line"><span class="keyword">let</span> padder: Padder = getRandomPadder();</span><br><span class="line"><span class="keyword">if</span> (padder <span class="keyword">instanceof</span> SpaceRepeatingPadder) &#123;</span><br><span class="line">    padder; <span class="comment">// 类型细化为'SpaceRepeatingPadder'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (padder <span class="keyword">instanceof</span> StringPadder) &#123;</span><br><span class="line">    padder; <span class="comment">// 类型细化为'StringPadder'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型保护和类型断言"><a href="#类型保护和类型断言" class="headerlink" title="类型保护和类型断言"></a>类型保护和类型断言</h3><p>类型断言可以手动去除null。语法是添加<font color="#FF7F50"> ! </font>后缀： <font color="#FF7F50">identifier!</font>从 identifier的类型里<font color="#FF7F50">去除了 null和 undefined</font>, 这对很多需要调用该变量类型的方法时很有用，起到了类型保护的容错作用、保证代码的健壮性，自己不用先判断该值是否存在再赋值调用了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fixed</span>(<span class="params">name: string | null</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">postfix</span>(<span class="params">epithet: string</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// return name.charAt(0) + '.  the ' + epithet; // error, 'name' is possibly null</span></span><br><span class="line">    <span class="keyword">return</span> name!.charAt(<span class="number">0</span>) + <span class="string">'.  the '</span> + epithet; <span class="comment">// ok</span></span><br><span class="line">  &#125;</span><br><span class="line">  name = name || <span class="string">"Bob"</span>;</span><br><span class="line">  <span class="keyword">return</span> postfix(<span class="string">"great"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型别名"><a href="#类型别名" class="headerlink" title="类型别名"></a>类型别名</h3><blockquote>
+<p>类型别名会给一个类型起个新名字。 类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。起别名不会新建一个类型 - 它创建了一个新名字来引用那个类型。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">type Name = string;</span><br><span class="line">type NameResolver = <span class="function"><span class="params">()</span> =&gt;</span> string;</span><br><span class="line">type NameOrResolver = Name | NameResolver;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params">n: NameOrResolver</span>): <span class="title">Name</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> n === <span class="string">'string'</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> n();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">type Container&lt;T&gt; = &#123; <span class="attr">value</span>: T &#125;;</span><br><span class="line">type Tree&lt;T&gt; = &#123;</span><br><span class="line">    value: T;</span><br><span class="line">    left: Tree&lt;T&gt;;</span><br><span class="line">    right: Tree&lt;T&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="接口-vs-类型别名"><a href="#接口-vs-类型别名" class="headerlink" title="接口 vs. 类型别名"></a>接口 vs. 类型别名</h3><p>1.错误信息不会使用别名。<br>2.接口是创建一个新的类型，别名不会创建一个新类型，是对原有类型的引用。<br>3.即使使用别名，编辑器只能提示还是会显示原有类型名称。</p>
+<h3 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function pluck&lt;T, K extends keyof T&gt;(o: T, names: K[]): T[K][] &#123;</span><br><span class="line">  <span class="keyword">return</span> names.map(<span class="function"><span class="params">n</span> =&gt;</span> o[n]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface Person &#123;</span><br><span class="line">    name: string;</span><br><span class="line">    age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person: Person = &#123;</span><br><span class="line">    name: <span class="string">'Jarid'</span>,</span><br><span class="line">    age: <span class="number">35</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> strings: string[] = pluck(person, [<span class="string">'name'</span>]); <span class="comment">// ok, string[]</span></span><br></pre></td></tr></table></figure>
+
+<p>这段代码中，<font color="#FF7F50"><strong>keyof T</strong></font>， <strong>索引类型查询操作符</strong>。<font color="#FF7F50">**T[K]</font>， 索引访问操作符</p>
+<blockquote>
+<p>对于任何类型 T， keyof T的结果为 T上已知的公共属性名的联合</p>
+</blockquote>
+<p><code>let personProps: keyof Person; // &#39;name&#39; | &#39;age&#39;</code></p>
+<h3 id="使用-const-enum-维护常量表"><a href="#使用-const-enum-维护常量表" class="headerlink" title="使用 const enum 维护常量表"></a>使用 const enum 维护常量表</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 const enum 维护常量</span></span><br><span class="line"><span class="keyword">const</span> enum TODO_STATUS &#123;</span><br><span class="line">  TODO = <span class="string">'TODO'</span>,</span><br><span class="line">  DONE = <span class="string">'DONE'</span>,</span><br><span class="line">  DOING = <span class="string">'DOING'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function todos (status: TODO_STATUS): Todo[];</span><br><span class="line"></span><br><span class="line">todos(TODO_STATUS.TODO)</span><br></pre></td></tr></table></figure>
+
+<h3 id="typescript-工具函数"><a href="#typescript-工具函数" class="headerlink" title="typescript 工具函数"></a>typescript 工具函数</h3><p><img src="https://user-gold-cdn.xitu.io/2019/12/29/16f50661061bc682?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt title="typescript 工具函数"></p>
+<p>学习了这些属性，感觉自己对TypeScript有了入门的一些了解，其余暂未能学习了解到内容，就等着在工作中踩坑学习了。在工作中，引入TypeScript确实是很强大很方便的一个选择，方便我们维护代码的同时，极重要的增强了代码的健壮性，类似can not find property、没有这个方法等等的错误，编译时就能让你意识到去避免，使得线上的代码更可靠！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/19/typeScript-入门学习1/" rel="next" title="TypeScript入门学习-01篇">
+                <i class="fa fa-chevron-left"></i> TypeScript入门学习-01篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高级使用"><span class="nav-number">1.</span> <span class="nav-text">高级使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#联合类型"><span class="nav-number">1.0.1.</span> <span class="nav-text">联合类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉类型"><span class="nav-number">1.0.2.</span> <span class="nav-text">交叉类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型保护与区分类型"><span class="nav-number">1.0.3.</span> <span class="nav-text">类型保护与区分类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typeof类型保护"><span class="nav-number">1.0.4.</span> <span class="nav-text">typeof类型保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#instanceof类型保护"><span class="nav-number">1.0.5.</span> <span class="nav-text">instanceof类型保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型保护和类型断言"><span class="nav-number">1.0.6.</span> <span class="nav-text">类型保护和类型断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型别名"><span class="nav-number">1.0.7.</span> <span class="nav-text">类型别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口-vs-类型别名"><span class="nav-number">1.0.8.</span> <span class="nav-text">接口 vs. 类型别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引类型"><span class="nav-number">1.0.9.</span> <span class="nav-text">索引类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-const-enum-维护常量表"><span class="nav-number">1.0.10.</span> <span class="nav-text">使用 const enum 维护常量表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typescript-工具函数"><span class="nav-number">1.0.11.</span> <span class="nav-text">typescript 工具函数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
