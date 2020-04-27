@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="现在网站中，涉及到表单填写之类的数据编辑，当用户想主观想要离开这个页面，或者刷新、关闭页面、不小心触发了路由跳转的操作时，都会给用户一个友好的提示，避免这种关闭导致的数据编辑丢失。  浏览器刷新、关闭页面时，默认有一个弹框提示；但是如果离开这个页面，需要展示我们自定义的提示呢？例如这种：  接下来我们就来说说如何实现离开页面时，给用户友好提示数据清除的情况。 实现这个功能，需要做两个事： 路由组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React中离开页面时，显示自定义弹框提示数据清除的实现">
+<meta property="og:url" content="http://yoursite.com/2020/04/25/levave-page/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="现在网站中，涉及到表单填写之类的数据编辑，当用户想主观想要离开这个页面，或者刷新、关闭页面、不小心触发了路由跳转的操作时，都会给用户一个友好的提示，避免这种关闭导致的数据编辑丢失。  浏览器刷新、关闭页面时，默认有一个弹框提示；但是如果离开这个页面，需要展示我们自定义的提示呢？例如这种：  接下来我们就来说说如何实现离开页面时，给用户友好提示数据清除的情况。 实现这个功能，需要做两个事： 路由组件">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/04/25/levave-page/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/25/levave-page/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/25/levave-page/3.png">
+<meta property="og:updated_time" content="2020-04-27T08:43:40.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React中离开页面时，显示自定义弹框提示数据清除的实现">
+<meta name="twitter:description" content="现在网站中，涉及到表单填写之类的数据编辑，当用户想主观想要离开这个页面，或者刷新、关闭页面、不小心触发了路由跳转的操作时，都会给用户一个友好的提示，避免这种关闭导致的数据编辑丢失。  浏览器刷新、关闭页面时，默认有一个弹框提示；但是如果离开这个页面，需要展示我们自定义的提示呢？例如这种：  接下来我们就来说说如何实现离开页面时，给用户友好提示数据清除的情况。 实现这个功能，需要做两个事： 路由组件">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/25/levave-page/2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/25/levave-page/">
+
+
+
+
+
+  <title>React中离开页面时，显示自定义弹框提示数据清除的实现 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/levave-page/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React中离开页面时，显示自定义弹框提示数据清除的实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T14:56:08+08:00">
+                2020-04-25
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-04-27T16:43:40+08:00">
+                2020-04-27
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>现在网站中，涉及到表单填写之类的数据编辑，当用户想主观想要离开这个页面，或者刷新、关闭页面、不小心触发了路由跳转的操作时，都会给用户一个友好的提示，避免这种关闭导致的数据编辑丢失。</p>
+<img src="/2020/04/25/levave-page/2.png" title="浏览器默认提示">
+<p>浏览器刷新、关闭页面时，默认有一个弹框提示；但是如果离开这个页面，需要展示我们自定义的提示呢？例如这种：</p>
+<img src="/2020/04/25/levave-page/1.png" title="自定义提示弹框">
+<p>接下来我们就来说说如何实现离开页面时，给用户友好提示数据清除的情况。</p>
+<h2 id="实现这个功能，需要做两个事："><a href="#实现这个功能，需要做两个事：" class="headerlink" title="实现这个功能，需要做两个事："></a>实现这个功能，需要做两个事：</h2><ol>
+<li>路由组件之间切换跳转，导致卸载组件、路由变化</li>
+<li>浏览器刷新、关闭，导致触发页面卸载</li>
+</ol>
+<a id="more"></a>
+
+<h1 id="一、处理路由组件之间切换跳转"><a href="#一、处理路由组件之间切换跳转" class="headerlink" title="一、处理路由组件之间切换跳转:"></a>一、处理路由组件之间切换跳转:</h1><h2 id="Vue-导航守卫实现"><a href="#Vue-导航守卫实现" class="headerlink" title="Vue 导航守卫实现"></a>Vue 导航守卫实现</h2><p>用过 Vue 的都会觉得这个实现起来很简单吧？利用 Vue-route 的导航守卫，根据 to、from 或者一些其他的条件，很方便就能实现路由跳转的控制，展示我们自定义的弹框。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">      <span class="comment">// elementui的confirm</span></span><br><span class="line">      <span class="keyword">this</span>.$confirm(<span class="string">'离开页面，数据会清除...'</span>, <span class="string">'警告'</span>, &#123;</span><br><span class="line">        confirmButtonText: <span class="string">'确定'</span>,</span><br><span class="line">        cancelButtonText: <span class="string">'取消'</span>,</span><br><span class="line">        type: <span class="string">'warning'</span></span><br><span class="line">      &#125;)</span><br><span class="line">      .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        next()</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">       <span class="comment">// 浏览器前进后退</span></span><br><span class="line">       <span class="built_in">window</span>.history.go(<span class="number">1</span>)</span><br><span class="line">     &#125;)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      next()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然而，我们现在要说的是 用 react 实现！</p>
+<h2 id="componentWillUnmount-实现可以吗？"><a href="#componentWillUnmount-实现可以吗？" class="headerlink" title="componentWillUnmount 实现可以吗？"></a>componentWillUnmount 实现可以吗？</h2><p>componentWillUnmount 这个钩子函数，组件卸载前的回调，它并不能阻止当前组件的卸载。所以不要想方设法在这里做提示，因为即便提示了，组件还是会卸载，数据还是会消失，并且如果这个路由组件比较复杂，由好几个组件组合而成，那么这种想法就不可行了。</p>
+<img src="/2020/04/25/levave-page/3.png" title="路由组件组成示意图">
+<p>所以我们只能从路由层去解决这个问题。</p>
+<h2 id="Prompt-实现"><a href="#Prompt-实现" class="headerlink" title="Prompt 实现"></a>Prompt 实现</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Prompt &#125; <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只需把这个组件放在页面中，即可实现路由跳转前的拦截提示</span></span><br><span class="line"></span><br><span class="line">&lt;Prompt</span><br><span class="line">  when=&#123;isPrompt&#125;</span><br><span class="line">  message=&#123;(location) =&gt;</span><br><span class="line">    location.pathname.startsWith(<span class="string">"/app"</span>)</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="string">`Are you sure you want to go to <span class="subst">$&#123;location.pathname&#125;</span>?`</span></span><br><span class="line">  &#125;</span><br><span class="line">/&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>这种方法适用于 React-Router V4 以上，该组件的参数有：</p>
+<ol>
+<li>when(Bool): 是否开启 Prompt 功能。页面没有填写或者编辑的时候，设为 false 就不要离开确认了。</li>
+<li>message(string): 设置 Prompt 提示内容</li>
+<li>message(function): 返回值为 true/false，即 bool 类型。返回值若为 false 会阻止路由跳转。</li>
+</ol>
+<h2 id="React-Router-路由勾子"><a href="#React-Router-路由勾子" class="headerlink" title="React-Router 路由勾子"></a>React-Router 路由勾子</h2><p>每个路由都有 Enter 和 Leave 钩子，用户进入或离开该路由时触发。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">componentDidMount() &#123;</span><br><span class="line">     <span class="keyword">this</span>.props.router.setRouteLeaveHook(</span><br><span class="line">       <span class="keyword">this</span>.props.route[<span class="number">1</span>],</span><br><span class="line">       <span class="keyword">this</span>.routerWillLeave</span><br><span class="line">     )</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> routerWillLeave(nextLocation) &#123;</span><br><span class="line">   <span class="comment">// 该回调函数返回 false 会阻止路由跳转</span></span><br><span class="line">   <span class="keyword">const</span> &#123; isLeaving &#125; = <span class="keyword">this</span>.state;</span><br><span class="line">   <span class="keyword">const</span> &#123; pathname &#125; = nextLocation;</span><br><span class="line">   <span class="comment">// 需要直接跳转的路由</span></span><br><span class="line">   <span class="keyword">if</span> (<span class="regexp">/\/test-a/</span>.test(pathname)) &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (isLeaving) &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">this</span>.setState(&#123; <span class="attr">isLeaving</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">   <span class="keyword">this</span>.nextLocation = nextLocation;</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>如果还是以前 React-Router V2.X 版本的，就适用这个方法。贴上官方英文解释，以免我表达有误，误导人，英文好的可以自行理解：</p>
+<blockquote>
+<p>setRouteLeaveHook(route, hook)<br>Registers the given hook function to run before leaving the given route.<br>During a normal transition, the hook function receives the next location as its only argument and can return either a prompt message (string) to show the user, to make sure they want to leave the page; or false, to prevent the transition. Any other return value will have no effect.<br>During the beforeunload event (in browsers) the hook receives no arguments. In this case it must return a prompt message to prevent the transition.<br>Returns a function that may be used to unbind the listener.<br>You don’t need to manually tear down the route leave hook in most cases. We automatically remove all attached route leave hooks after leaving the associated route</p>
+</blockquote>
+<p>setRouteLeaveHook 方法为 Leave 钩子指定 routerWillLeave 函数。该方法需返回 true 或者 false，如果返回 false，将阻止路由的切换，否则继续路由跳转。setRouteLeaveHook 这个方法则返回一个可以用来取消绑定的函数<br>一般在 componentDidMount 注册 setRouteLeaveHook，这样当 this.props.router.push(‘xxx’)切换路由时，会先执行 routerWillLeave 这个方法，通过返回的 true 还是 false 由它来决定是否跳转。</p>
+<blockquote>
+<p>注意：我用 setRouteLeaveHook 遇到一个坑，第一个参数必须是当前组件的路由，第一个参数传参尝试过 this.props.route, 但是不知道为什么，当时我的这个 this.props.route 对象是从根目录(‘/‘)开始的，即使 componentDidMount 执行了 setRouteLeaveHook，但是注册不成功，根本不会回调 routerWillLeave 这个方法。第一个组件只有是当前路由组件才会注册成功，routerWillLeave 才能在路由变化的时候回调到。</p>
+</blockquote>
+<h1 id="二、处理浏览器刷新、关闭"><a href="#二、处理浏览器刷新、关闭" class="headerlink" title="二、处理浏览器刷新、关闭"></a>二、处理浏览器刷新、关闭</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">componentDidMount()&#123;</span><br><span class="line">  <span class="built_in">window</span>.onbeforeunload = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.returnValue = <span class="string">'离开当前页后，所编辑的数据将不可恢复'</span> <span class="comment">// 浏览器有可能不会提示这个信息，会按照固定信息提示</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="built_in">window</span>.onunload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    sessionStorage.setItem(<span class="string">'key'</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">componentWillUnmount() &#123;</span><br><span class="line">  <span class="built_in">window</span>.onbeforeunload = <span class="literal">null</span>;</span><br><span class="line">  <span class="built_in">window</span>.onunload = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>浏览器的刷新和关闭的话，就需要浏览器事件来控制了。</p>
+<ul>
+<li>beforeunload 当浏览器窗口关闭或者刷新时，会触发 beforeunload 事件。当前页面不会直接关闭，可以点击确定按钮关闭或刷新，也可以取消关闭或刷新</li>
+<li>unload 当文档或一个子资源正在被卸载时, 触发 unload 事件。该事件会在 beforeunload、pagehide 这两个事件被触发后。</li>
+</ul>
+<p>beforeunload 这个事件点击取消或者确定的时候没有回调函数可用，如果我想在确定的时候做一些事情，比如清楚一些缓存，我目前的方法就是在 beforeunload 弹框里点击确定的时候，通过 unload 来实现。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/12/项目中遇到的跨域问题/" rel="next" title="项目中遇到的跨域问题">
+                <i class="fa fa-chevron-left"></i> 项目中遇到的跨域问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现这个功能，需要做两个事："><span class="nav-number">1.</span> <span class="nav-text">实现这个功能，需要做两个事：</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#一、处理路由组件之间切换跳转"><span class="nav-number"></span> <span class="nav-text">一、处理路由组件之间切换跳转:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue-导航守卫实现"><span class="nav-number">1.</span> <span class="nav-text">Vue 导航守卫实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#componentWillUnmount-实现可以吗？"><span class="nav-number">2.</span> <span class="nav-text">componentWillUnmount 实现可以吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-实现"><span class="nav-number">3.</span> <span class="nav-text">Prompt 实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Router-路由勾子"><span class="nav-number">4.</span> <span class="nav-text">React-Router 路由勾子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、处理浏览器刷新、关闭"><span class="nav-number"></span> <span class="nav-text">二、处理浏览器刷新、关闭</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
