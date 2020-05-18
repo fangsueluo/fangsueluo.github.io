@@ -287,7 +287,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-05-18T21:39:48+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-05-18T21:42:08+08:00">
                 2020-05-18
               </time>
             
@@ -322,70 +322,15 @@
 
       
         
-          
-            <h1 id="为什么需要埋点"><a href="#为什么需要埋点" class="headerlink" title="为什么需要埋点"></a>为什么需要埋点</h1><p>现在评定产品的好坏、产品使用范围的广度等信息，基本上都是通过数据说明的，而埋点，正是作为这些数据统计的支撑。埋点的意义也就不言而喻了。用户浏览次数统计、交互行为跟踪、商品交易信息收集等，都是埋点的作用。</p>
+          <h1 id="为什么需要埋点"><a href="#为什么需要埋点" class="headerlink" title="为什么需要埋点"></a>为什么需要埋点</h1><p>现在评定产品的好坏、产品使用范围的广度等信息，基本上都是通过数据说明的，而埋点，正是作为这些数据统计的支撑。埋点的意义也就不言而喻了。用户浏览次数统计、交互行为跟踪、商品交易信息收集等，都是埋点的作用。</p>
 <h1 id="埋点有哪些方案"><a href="#埋点有哪些方案" class="headerlink" title="埋点有哪些方案"></a>埋点有哪些方案</h1><p>我了解到的目前市面上的埋点方案，有代码埋点、可视化埋点、无埋点、后端埋点方案。</p>
-<h3 id="1、代码埋点"><a href="#1、代码埋点" class="headerlink" title="1、代码埋点"></a>1、代码埋点</h3><p>代码埋点，就是通过我们前端同学，手动在代码里自定义监听和收集处理需要跟踪的信息。<br>由于是自定义的，所以在精度这块比较可控，数据分析同学需要什么我们基本上都能收集给他们，代码埋点的优势如下：</p>
-<ul>
-<li>事件标识明确、触发方式可以灵活自定义</li>
-<li>业务参数丰富</li>
-<li>数据分析更精确</li>
-</ul>
-<p>同时也伴随着痛点：</p>
-<ul>
-<li>前端同学工作量增大</li>
-<li>业务代码和埋点揉在一起，不好管理</li>
-<li>修改埋点不是很方便，还要发版后生效</li>
-</ul>
-<h3 id="2、可视化埋点"><a href="#2、可视化埋点" class="headerlink" title="2、可视化埋点"></a>2、可视化埋点</h3><p>可视化埋点就相对简单了，但是需要有数据平台支持。运营通过可视化的界面拖拽配置，将元素与要采集事件关联起来，可以自动生成埋点代码嵌入到页面中。优点是：</p>
-<ul>
-<li>所配即所得</li>
-<li>减少前端工作量</li>
-<li>埋点流程简化</li>
-</ul>
-<p>也有不好的一面：不能像代码埋点那样收集丰富的业务参数。</p>
-<h3 id="3、无埋点"><a href="#3、无埋点" class="headerlink" title="3、无埋点"></a>3、无埋点</h3><p>无埋点也叫全埋点，前端自动采集全部事件，上报埋点数据，由后端来过滤和计算出有用的数据。优势：</p>
-<ul>
-<li>技术成本低</li>
-<li>数据可回溯（这是最大的优势）</li>
-</ul>
-<p>缺点就是：不够灵活，记录的信息少，并且由于所有的元素数据都要收集，导致传输压力大，会给数据传输和服务器带来较大的压力</p>
-<h3 id="4、后端埋点"><a href="#4、后端埋点" class="headerlink" title="4、后端埋点"></a>4、后端埋点</h3><p>在后端采集的数据，例如后端的日志的采集。优势是传输的数据很真实，但缺少用户交互方面的采集，所以这种方案需要配合前端埋点，实现更大的数据价值</p>
-<h1 id="为什么是-gif-图打点"><a href="#为什么是-gif-图打点" class="headerlink" title="为什么是 gif 图打点"></a>为什么是 gif 图打点</h1><p>前端监控的原理，就是要将页面的用户信息上报给服务器，数据一般都是通过 url_encode 或者 json 收集。通常我们知道的埋点实现，都是基于 gif 图打点的，那么为什么这么做呢，有如下原因：</p>
-<ul>
-<li>避免跨越</li>
-<li>相比 PNG/JPG 等其他格式的图片，GIF 的最低合法体积最小（最小的 BMP 文件需要 74 个字节，PNG 需要 67 个字节，而合法的 GIF，只需要 43 个字节）</li>
-<li>执行过程无阻塞</li>
-</ul>
-<h1 id="实现一个简单的埋点"><a href="#实现一个简单的埋点" class="headerlink" title="实现一个简单的埋点"></a>实现一个简单的埋点</h1><p>这段简单的脚本在页面加载完后执行，可以统计页面的曝光率，至于其他点击事件、选择事件等以及参数的收集，实现起来就比较复杂了。但是埋点的原理，就是我们在需要业务统计的地方，通过 gif 打点，告诉服务器相关的信息，服务器再做统一处理。更复杂的埋点方案，可以去 github 搜索大牛们实现的埋点源码解读下。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> thisPage = location.href;</span><br><span class="line"><span class="keyword">var</span> referringPage = <span class="built_in">document</span>.referrer ? <span class="built_in">document</span>.referrer : <span class="string">"none"</span>;</span><br><span class="line"><span class="keyword">var</span> beacon = <span class="keyword">new</span> Image();</span><br><span class="line">beacon.src =</span><br><span class="line">  <span class="string">"http://www.example.com/logger/beacon.gif?page="</span> +</span><br><span class="line">  <span class="built_in">encodeURI</span>(thisPage) +</span><br><span class="line">  <span class="string">"&amp;ref="</span> +</span><br><span class="line">  <span class="built_in">encodeURI</span>(referringPage);</span><br></pre></td></tr></table></figure>
-
-<h1 id="神策埋点介绍"><a href="#神策埋点介绍" class="headerlink" title="神策埋点介绍"></a>神策埋点介绍</h1><p>由于最近有用神策的埋点，对于神策的接入，去官方文档了解下就行了，知道埋点原理，就能很快上手。</p>
-<p>安装 sdk，<code>npm install sa-sdk-javascript</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sensors = <span class="built_in">require</span>(<span class="string">'sa-sdk-javascript'</span>);</span><br><span class="line">sensors.init(&#123;</span><br><span class="line">  server_url: <span class="string">'...'</span>,</span><br><span class="line">  <span class="comment">//如果神策代码中 `sensorsdata.min.js` 版本是 1.13.1 及以前版本，必须须配置 heatmap_url，高于此版本不需要配置。heatmap_url 神策分析中点击分析及触达分析功能代码，代码生成工具会自动生成。</span></span><br><span class="line">  heatmap_url: <span class="string">"在 GitHub 下载新版本的 heatmap.min.js "</span>,</span><br><span class="line">  <span class="comment">//如果神策后台版本及 `sensorsdata.min.js` 均是 1.10 及以上版本，这个参数不需要配置 web_url。 web_url 神策分析中点击分析及触达分析功能会用到此地址，代码生成工具会自动生成。</span></span><br><span class="line">  web_url:<span class="string">"神策分析后台地址"</span>,</span><br><span class="line">  heatmap: &#123;</span><br><span class="line">     <span class="comment">//是否开启点击图，默认为 default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭</span></span><br><span class="line">     <span class="comment">//需要 Web JS SDK 版本号大于 1.7</span></span><br><span class="line">     clickmap:<span class="string">'default'</span>,</span><br><span class="line">     <span class="comment">//是否开启触达注意力图，默认 not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启</span></span><br><span class="line">     <span class="comment">//需要 Web JS SDK 版本号大于 1.9.1</span></span><br><span class="line">     scroll_notice_map:<span class="string">'not_collect'</span></span><br><span class="line">  &#125;</span><br><span class="line">  .......</span><br><span class="line">&#125;);</span><br><span class="line">sensors.quick(<span class="string">'autoTrack'</span>); <span class="comment">//用于采集 $pageview 事件</span></span><br></pre></td></tr></table></figure>
-
-<p>这样就算接入神策了，接入之后可以去神策后台验证下。</p>
-<p>上手神策数据，首先要了解它的数据格式:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"distinct_id"</span>: <span class="string">"123456"</span>,</span><br><span class="line">	<span class="string">"time"</span>: <span class="number">1434556935000</span>,</span><br><span class="line">	<span class="string">"type"</span>: <span class="string">"track"</span>,</span><br><span class="line">	<span class="string">"event"</span>: <span class="string">"ViewProduct"</span>,</span><br><span class="line">	<span class="string">"project"</span>: <span class="string">"ebiz_test"</span>,</span><br><span class="line">	<span class="string">"time_free"</span>: <span class="literal">true</span>, <span class="comment">//建议在导入历史数据时使用，SDK 采集的实时数据不建议使用</span></span><br><span class="line">	<span class="string">"properties"</span>: &#123;</span><br><span class="line">		<span class="string">"$is_login_id"</span>:<span class="literal">true</span>, <span class="comment">//此参数请慎重使用，详细介绍请参考文档底部 8.1 $is_login_id 参数说明</span></span><br><span class="line">		<span class="string">"$app_version"</span>:<span class="string">"1.3"</span>,</span><br><span class="line">		<span class="string">"$wifi"</span>:<span class="literal">true</span>,</span><br><span class="line">		<span class="string">"$ip"</span>:<span class="string">"180.79.35.65"</span>,</span><br><span class="line">		<span class="string">"$province"</span>:<span class="string">"湖南"</span>,</span><br><span class="line">		<span class="string">"$city"</span>:<span class="string">"长沙"</span>,</span><br><span class="line">		<span class="string">"$user_agent"</span>:<span class="string">"Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/58.0.3029.113 Mobile/14F89 Safari/602.1"</span>,</span><br><span class="line">		<span class="string">"$screen_width"</span>:<span class="number">320</span>,</span><br><span class="line">		<span class="string">"$screen_height"</span>:<span class="number">640</span>,</span><br><span class="line">		<span class="string">"product_id"</span>:<span class="number">12345</span>,</span><br><span class="line">		<span class="string">"product_name"</span>:<span class="string">"苹果"</span>,</span><br><span class="line">		<span class="string">"product_classify"</span>:<span class="string">"水果"</span>,</span><br><span class="line">		<span class="string">"product_price"</span>:<span class="number">14.0</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>event：事件名，需是合法的变量名，我认为最重要的标志，是你需要监控的某个按钮或者成功标志的一个名称</li>
-<li>properties：event 的具体属性，就是我们记录了这个事件，然后通过事件带过来的 properties 就能更详细的了解这个用户触发个事件做了什么事</li>
-<li>神策里给我预置了很多属性，带$的属性都是预置的</li>
-</ul>
-<p>发送一个事件：<code>sensors.track(event_name[, properties][, callback])</code></p>
-<ul>
-<li>event_name: string，必选。表示要追踪的事件名。</li>
-<li>properties: object，可选。表示这个事件的属性。</li>
-<li>callback: function，可选。表示已经发送完数据之后的回调。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 追踪浏览商品事件。</span></span><br><span class="line">sensors.track(<span class="string">"ViewProduct"</span>, &#123;</span><br><span class="line">  <span class="comment">//String 类型</span></span><br><span class="line">  ProductName: <span class="string">"MacBook Pro"</span>,</span><br><span class="line">  <span class="comment">//Number 类型，-9E15 到 9E15 小数点后最多保留 3 位</span></span><br><span class="line">  ProductPrice: <span class="number">123.45</span>,</span><br><span class="line">  <span class="comment">//BOOL 类型，true 或 false</span></span><br><span class="line">  IsAddedToFav: <span class="literal">false</span>,</span><br><span class="line">  <span class="comment">//List 类型，字符串元素的数组，最大元素个数为 500，其中每个元素使用 UTF-8 编码后最大长度 255 字节</span></span><br><span class="line">  ProductList: [<span class="string">"apple"</span>, <span class="string">"orange"</span>],</span><br><span class="line">  <span class="comment">//DATETIME 类型，可以直接传 new Date() 或者 传 yyyy-MM-dd HH:mm:ss.SSS / yyyy-MM-dd HH:mm:ss 格式的字符串。</span></span><br><span class="line">  ViewTime: <span class="keyword">new</span> <span class="built_in">Date</span>(),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>至此，就可以轻松收集这个点的数据了，埋点就是这么简单。</p>
-<p><code>sensors.registerPage(object)</code>，对于某些情况，有些数据对每个事件都是需要的，那么可以用 registerPage 方法将该属性设置为事件公共属性。例如 sensors.registerPage({gender:”male”})，在你 track 的时候 sensors.track(“index_visit”)，相当于 sensors.track(“index_visit”, {gender:”male”})，一旦有变化可以统一便捷的修改公共参数。</p>
-<p>需要进行其他更复杂的埋点，神策官方文档查一下就 OK 了，神策 WebAPI 传送门：<a href="https://manual.sensorsdata.cn/sa/latest/tech_sdk_client_web-1573905.html" target="_blank" rel="noopener">https://manual.sensorsdata.cn/sa/latest/tech_sdk_client_web-1573905.html</a></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/05/18/maidian/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
