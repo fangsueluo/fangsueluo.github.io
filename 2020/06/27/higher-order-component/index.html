@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="高阶组件的定义高阶组件(Higher-Order Component)是一个函数，以下简称 HOC，接受一个组件，返回一个新组件。 const EnhancedComponent = higherOrderComponent(WrappedComponent);  HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：  12345678910111213impor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于React高阶组件">
+<meta property="og:url" content="http://yoursite.com/2020/06/27/higher-order-component/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="高阶组件的定义高阶组件(Higher-Order Component)是一个函数，以下简称 HOC，接受一个组件，返回一个新组件。 const EnhancedComponent = higherOrderComponent(WrappedComponent);  HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：  12345678910111213impor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-29T10:04:28.509Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于React高阶组件">
+<meta name="twitter:description" content="高阶组件的定义高阶组件(Higher-Order Component)是一个函数，以下简称 HOC，接受一个组件，返回一个新组件。 const EnhancedComponent = higherOrderComponent(WrappedComponent);  HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：  12345678910111213impor">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/27/higher-order-component/">
+
+
+
+
+
+  <title>关于React高阶组件 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/27/higher-order-component/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于React高阶组件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-27T14:16:39+08:00">
+                2020-06-27
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-06-29T18:04:28+08:00">
+                2020-06-29
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="高阶组件的定义"><a href="#高阶组件的定义" class="headerlink" title="高阶组件的定义"></a>高阶组件的定义</h1><p>高阶组件(Higher-Order Component)是一个函数，以下简称 HOC，接受一个组件，返回一个新组件。</p>
+<p><code>const EnhancedComponent = higherOrderComponent(WrappedComponent);</code></p>
+<blockquote>
+<p>HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">higherOrderComponent</span>(<span class="params">WrappedComponent</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">HOCComponent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentDidUpdate(prevProps) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Current props: "</span>, <span class="keyword">this</span>.props);</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Previous props: "</span>, prevProps);</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">return</span> &lt;WrappedComponent &#123;...this.props&#125; /&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>高阶组件不是只能接收一个参数，它也可以接收多个参数。项目中通常使用的 React Redux 的 <code>connect</code> 函数，它的 HOC 签名是这样的：<br><code>const ConnectedComment = connect(commentSelector, commentActions)(CommentList);</code></p>
+<p>这样的用法实现方式大概类似以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">HOCFunction</span> = (<span class="params">param</span>) =&gt; (<span class="params">WrappedComponent</span>) =&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">HOCComponent</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentWillMount() &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'通用逻辑'</span>, param)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">return</span> &lt;WrappedComponent data=&#123;this.state.data&#125; &#123;...this.props&#125; /&gt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class MyComponent1 extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;div&gt;&#123;this.props.data&#125;&lt;/div&gt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //省略其他逻辑...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const resultComponent = HOCFunction('param1 test')(MyComponent1);</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h1 id="高阶组件-HOC-使用场景"><a href="#高阶组件-HOC-使用场景" class="headerlink" title="高阶组件(HOC) 使用场景"></a>高阶组件(HOC) 使用场景</h1><ul>
+<li>代码复用：这是高阶组件最基本的功能。组件是 React 中最小单元，两个相似度很高的组件通过将组件重复部分抽取出来，再通过高阶组件扩展，增删改 props，可达到组件可复用的目的；</li>
+<li>条件渲染：控制组件的渲染逻辑，常见场景：鉴权、新手指导；</li>
+<li>生命周期捕获/劫持：借助父组件子组件生命周期规则捕获子组件的生命周期，常见场景：打点。</li>
+</ul>
+<h1 id="使用高阶组件的注意事项："><a href="#使用高阶组件的注意事项：" class="headerlink" title="使用高阶组件的注意事项："></a>使用高阶组件的注意事项：</h1><ul>
+<li><h3 id="Refs-不会被传递给被包装组件"><a href="#Refs-不会被传递给被包装组件" class="headerlink" title="Refs 不会被传递给被包装组件"></a>Refs 不会被传递给被包装组件</h3></li>
+</ul>
+<p>虽然高阶组件的约定是将所有 props 传递给被包装组件，因为 ref 实际上并不是一个 prop - 就像 key 一样，它是由 React 专门处理的。如果将 ref 添加到 HOC 的返回组件中，则 ref 引用指向容器组件，而不是被包装组件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> enhanceComponent = HOCComponent(WrappedComponent)</span><br><span class="line"></span><br><span class="line">&lt;enhanceComponent ref=&#123;el =&gt; <span class="keyword">this</span>.$el = el&#125; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 此时，ref指向HOCComponent，而不是WrappedComponent</span></span><br></pre></td></tr></table></figure>
+
+<p>在应用中如果需要和 dom 交互后者父组件想要调用子组件的某些方法，我们就需要获取 ref。react-redux 中的 connect 在开发中是常用到的高阶组件，如果我们想通过 ref 去拿被 connect 包裹的组件是无法获取到结果的，通常会手动指定一下调用 connect 方法的最后一个参数，指定 withRef 为 true， 这样就能拿到被包裹组件的 ref 了。<br><code>connect([mapStateToProps], [mapDispatchToProps], [mergeProps], {withRef: true})(CustomComponent)</code></p>
+<p>如果是自定义的 HOC，又希望拿到被包裹组件的 ref，怎么做呢？答案是 React.forwardRef API（React 16.3 中引入）， 通过 React.forwardRef 在高阶组件中转发 refs：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logProps</span>(<span class="params">Component</span>) </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">LogProps</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentDidUpdate(prevProps) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"old props:"</span>, prevProps);</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"new props:"</span>, <span class="keyword">this</span>.props);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; forwardedRef, ...rest &#125; = <span class="keyword">this</span>.props;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 将自定义的 prop 属性 “forwardedRef” 定义为 ref</span></span><br><span class="line">      <span class="keyword">return</span> &lt;Component ref=&#123;forwardedRef&#125; &#123;...rest&#125; /&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 注意 React.forwardRef 回调的第二个参数 “ref”。</span><br><span class="line">  // 我们可以将其作为常规 prop 属性传递给 LogProps，例如 “forwardedRef”</span><br><span class="line">  // 然后它就可以被挂载到被 LogProps 包裹的子组件上。</span><br><span class="line">  return React.forwardRef((props, ref) =&gt; &#123;</span><br><span class="line">    return &lt;LogProps &#123;...props&#125; forwardedRef=&#123;ref&#125; /&gt;;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h3 id="不会复制静态方法"><a href="#不会复制静态方法" class="headerlink" title="不会复制静态方法"></a>不会复制静态方法</h3></li>
+</ul>
+<p>有时我们在原始组件定义了静态方法，当用 HOC 把原始组件包装后，原始组件的静态方法在 HOC 之后的新组件里是不存在的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义静态函数</span></span><br><span class="line">WrappedComponent.staticMethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">/*...*/</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 现在使用 HOC</span></span><br><span class="line"><span class="keyword">const</span> EnhancedComponent = enhance(WrappedComponent);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 增强组件没有 staticMethod</span></span><br><span class="line"><span class="keyword">typeof</span> EnhancedComponent.staticMethod === <span class="string">"undefined"</span>; <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法是手动复制这些静态方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function enhance(WrappedComponent) &#123;</span><br><span class="line">  class Enhance extends React.Component &#123;/*...*/&#125;</span><br><span class="line">  // 必须准确知道应该拷贝哪些方法 :(</span><br><span class="line">  Enhance.staticMethod = WrappedComponent.staticMethod;</span><br><span class="line">  return Enhance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果不清楚有哪些静态方法，可以使用 hoist-non-react-statics 这个库自动拷贝所有非 React 静态方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import hoistNonReactStatic from &apos;hoist-non-react-statics&apos;;</span><br><span class="line">function enhance(WrappedComponent) &#123;</span><br><span class="line">  class Enhance extends React.Component &#123;/*...*/&#125;</span><br><span class="line">  hoistNonReactStatic(Enhance, WrappedComponent);</span><br><span class="line">  return Enhance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h3 id="不要在-render-方法中使用-HOC"><a href="#不要在-render-方法中使用-HOC" class="headerlink" title="不要在 render 方法中使用 HOC"></a>不要在 render 方法中使用 HOC</h3></li>
+</ul>
+<p>React 的 diff 算法（称为协调）使用组件标识来确定它是应该更新现有子树还是将其丢弃并挂载新子树。 如果从 render 返回的组件与前一个渲染中的组件相同（===），则 React 通过将子树与新子树进行区分来递归更新子树。 如果它们不相等，则完全卸载前一个子树。这不仅仅是性能问题 - 重新挂载组件会导致该组件及其所有子组件的状态丢失。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  // 每次调用 render 函数都会创建一个新的 EnhancedComponent</span><br><span class="line">  // EnhancedComponent1 !== EnhancedComponent2</span><br><span class="line">  const EnhancedComponent = enhance(MyComponent);</span><br><span class="line">  // 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！</span><br><span class="line">  return &lt;EnhancedComponent /&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/18/maidian/" rel="next" title="前端埋点方案">
+                <i class="fa fa-chevron-left"></i> 前端埋点方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高阶组件的定义"><span class="nav-number">1.</span> <span class="nav-text">高阶组件的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高阶组件-HOC-使用场景"><span class="nav-number">2.</span> <span class="nav-text">高阶组件(HOC) 使用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用高阶组件的注意事项："><span class="nav-number">3.</span> <span class="nav-text">使用高阶组件的注意事项：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Refs-不会被传递给被包装组件"><span class="nav-number">3.0.1.</span> <span class="nav-text">Refs 不会被传递给被包装组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不会复制静态方法"><span class="nav-number">3.0.2.</span> <span class="nav-text">不会复制静态方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要在-render-方法中使用-HOC"><span class="nav-number">3.0.3.</span> <span class="nav-text">不要在 render 方法中使用 HOC</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
