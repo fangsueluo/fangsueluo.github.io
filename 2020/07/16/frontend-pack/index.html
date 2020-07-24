@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="几个概念我在学习 webpack 的时候，Chunk 的理解感觉比较困难，对概念的深刻理解是更好的理解 webpack 运行的基石。  Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。 Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。 Chunk：代码块，一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack深入学习">
+<meta property="og:url" content="http://yoursite.com/2020/07/16/frontend-pack/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="几个概念我在学习 webpack 的时候，Chunk 的理解感觉比较困难，对概念的深刻理解是更好的理解 webpack 运行的基石。  Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。 Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。 Chunk：代码块，一个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/07/16/frontend-pack/webpack.png">
+<meta property="og:updated_time" content="2020-07-21T11:39:08.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack深入学习">
+<meta name="twitter:description" content="几个概念我在学习 webpack 的时候，Chunk 的理解感觉比较困难，对概念的深刻理解是更好的理解 webpack 运行的基石。  Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。 Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。 Chunk：代码块，一个">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/16/frontend-pack/webpack.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/16/frontend-pack/">
+
+
+
+
+
+  <title>webpack深入学习 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/16/frontend-pack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack深入学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-16T20:24:52+08:00">
+                2020-07-16
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-21T19:39:08+08:00">
+                2020-07-21
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h1><p>我在学习 webpack 的时候，Chunk 的理解感觉比较困难，对概念的深刻理解是更好的理解 webpack 运行的基石。</p>
+<ul>
+<li>Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。</li>
+<li>Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。</li>
+<li>Chunk：代码块，一个 Chunk 由多个模块组合而成，用于代码合并与分割。</li>
+<li>Loader：模块转换器，用于把模块原内容按照需求转换成新内容。webpack 只能处理 javascript，所以我们需要对一些非 js 文件处理成 webpack 能够处理的模块，比如 sass、图像等文件</li>
+<li>Plugin：扩展插件，在 Webpack 构建流程中的特定时机会广播出对应的事件，插件可以监听这些事件的发生，在特定时机做对应的事情。</li>
+</ul>
+<h1 id="webpack-运行流程"><a href="#webpack-运行流程" class="headerlink" title="webpack 运行流程"></a>webpack 运行流程</h1><p>Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：</p>
+<ol>
+<li>初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；</li>
+<li>开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译；</li>
+<li>确定入口：根据配置中的 entry 找出所有的入口文件；</li>
+<li>编译模块：从入口文件出发，调用所有配置的 Loader 对模块进行翻译，再找出该模块依赖的模块，再递归本步骤直到所有入口依赖的文件都经过了本步骤的处理；</li>
+<li>完成模块编译：在经过第 4 步使用 Loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系；</li>
+<li>输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会；</li>
+<li>输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。</li>
+<li>在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。</li>
+</ol>
+<a id="more"></a>
+
+<h1 id="webpack-构建流程分解"><a href="#webpack-构建流程分解" class="headerlink" title="webpack 构建流程分解"></a>webpack 构建流程分解</h1><p>Webpack 执行一次构建流程会有一下三个阶段，如果开启监听模式，则流程会在初始化阶段后，反复执行编译、输出这两个阶段。即监听模式下的流程是：初始化-&gt;<font color="#fc6423">（编译-&gt;输出）</font>-&gt;<font color="#fc6423">（编译-&gt;输出）</font>-&gt;<font color="#fc6423">（编译-&gt;输出）</font>…</p>
+<ol>
+<li>初始化：启动构建，读取与合并配置参数，加载 Plugin，实例化 Compiler。</li>
+<li>编译：从 Entry 发出，针对每个 Module 串行调用对应的 Loader 去翻译文件内容，再找到该 Module 依赖的 Module，递归地进行编译处理。</li>
+<li>输出：对编译后的 Module 组合成 Chunk，把 Chunk 转换成文件，输出到文件系统。</li>
+</ol>
+<img src="/2020/07/16/frontend-pack/webpack.png" title="webpack流程图">
+
+<h1 id="输出文件分析"><a href="#输出文件分析" class="headerlink" title="输出文件分析"></a>输出文件分析</h1><p>灵魂拷问：webpack 输出的 bundle.js 是什么样子的？ 为什么原来一个个的模块文件被合并成了一个单独的文件？为什么 bundle.js 能直接运行在浏览器中？<br>打包后的 bundle.js 文件内容大致模样是这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">modules</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 模拟 require 语句</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 执行存放所有模块数组中的第0个模块</span></span><br><span class="line">  __webpack_require__(<span class="number">0</span>);</span><br><span class="line">&#125;)([</span><br><span class="line">  <span class="comment">/*存放所有模块的数组*/</span></span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<p>bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 <strong>webpack_require</strong> 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句。</p>
+<p>原来一个个独立的模块文件被合并到了一个单独的 bundle.js 的原因在于浏览器不能像 Node.js 那样快速地去本地加载一个个模块文件，而必须通过网络请求去加载还未得到的文件。 如果模块数量很多，加载时间会很长，因此把所有模块都存放在了数组中，执行一次网络加载。并且 Webpack 做了缓存优化：执行加载过的模块不会再执行第二次，执行结果会缓存在内存中，当某个模块第二次被访问时会直接去内存中读取被缓存的返回值。</p>
+<h3 id="分割代码时的输出"><a href="#分割代码时的输出" class="headerlink" title="分割代码时的输出"></a>分割代码时的输出</h3><blockquote>
+<p>提取公共代码和异步加载本质上都是代码分割</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 异步加载 show.js</span></span><br><span class="line"><span class="keyword">import</span>(<span class="string">"./test"</span>).then(<span class="function">(<span class="params">&#123; A &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  A();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>重新构建后会输出两个文件，分别是执行入口文件 bundle.js 和 异步加载文件 0.bundle.js。</p>
+<p>其中 0.bundle.js 内容如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">window</span>[<span class="string">"webpackJsonp"</span>] = <span class="built_in">window</span>[<span class="string">"webpackJsonp"</span>] || []).push([</span><br><span class="line">  [<span class="number">0</span>],</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"./src/test.js"</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">      module,</span></span></span><br><span class="line"><span class="function"><span class="params">      __webpack_exports__,</span></span></span><br><span class="line"><span class="function"><span class="params">      __webpack_require__</span></span></span><br><span class="line"><span class="function"><span class="params">    </span>) </span>&#123;</span><br><span class="line">      <span class="comment">// content</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Loader"><a href="#Loader" class="headerlink" title="Loader"></a>Loader</h1><blockquote>
+<p>Loader 就像是一个翻译员，能把源文件经过转化后输出新的结果，并且一个文件还可以链式的经过多个翻译员翻译。</p>
+</blockquote>
+<p>一个 Loader 的职责是单一的，只需要完成一种转换。 如果一个源文件需要经历多步转换才能正常使用，就通过多个 Loader 去转换。 在调用多个 Loader 去转换一个文件时，每个 Loader 会链式的顺序执行， 第一个 Loader 将会拿到需处理的原内容，上一个 Loader 处理后的结果会传给下一个接着处理，最后的 Loader 将处理后的最终结果返回给 Webpack。</p>
+<h3 id="Loader-基础"><a href="#Loader-基础" class="headerlink" title="Loader 基础"></a>Loader 基础</h3><ul>
+<li><p>一个 Loader 其实就是一个 Node.js 模块，可以调用任何 Node.js 自带的 API，或者安装第三方模块进行调用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sass = <span class="built_in">require</span>(<span class="string">"node-sass"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> sass(source);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获得 Loader 的 options</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">"loader-utils"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 获取到用户给当前 Loader 传入的 options</span></span><br><span class="line">  <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">return</span> source;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>让 Loader 返回除了内容之外的东西。this.callback 是 Webpack 给 Loader 注入的 API，以方便 Loader 和 Webpack 之间通信</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 通过 this.callback 告诉 Webpack 返回的结果</span></span><br><span class="line">  <span class="comment">// this.callback(err: Error | null, content: string | Buffer, sourceMap?: SourceMap, abstractSyntaxTree?: AST)</span></span><br><span class="line">  <span class="keyword">this</span>.callback(<span class="literal">null</span>, source, sourceMaps);</span><br><span class="line">  <span class="comment">// 当你使用 this.callback 返回内容时，该 Loader 必须返回 undefined，</span></span><br><span class="line">  <span class="comment">// 以让 Webpack 知道该 Loader 返回的结果在 this.callback 中，而不是 return 中</span></span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Loader 有同步和异步之分，有些场景下转换的步骤只能是异步完成的，如通过网络请求才能得出结果的转换, 异步转换方法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 告诉 Webpack 本次转换是异步的，Loader 会在 callback 中回调结果</span></span><br><span class="line">  <span class="keyword">var</span> callback = <span class="keyword">this</span>.async();</span><br><span class="line">  someAsyncOperation(source, <span class="function"><span class="keyword">function</span> (<span class="params">err, result, sourceMaps, ast</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 通过 callback 返回异步执行后的结果</span></span><br><span class="line">    callback(err, result, sourceMaps, ast);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Loader 处理二进制数据。在默认的情况下，Webpack 传给 Loader 的原内容都是 UTF-8 格式编码的字符串，但是处理二进制文件，例如 file-loader，就需要 Webpack 给 Loader 传入二进制格式的数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 在 exports.raw === true 时，Webpack 传给 Loader 的 source 是 Buffer 类型的</span></span><br><span class="line">  source <span class="keyword">instanceof</span> Buffer === <span class="literal">true</span>;</span><br><span class="line">  <span class="comment">// Loader 返回的类型也可以是 Buffer 类型的</span></span><br><span class="line">  <span class="comment">// 在 exports.raw !== true 时，Loader 也可以返回 Buffer 类型的结果</span></span><br><span class="line">  <span class="keyword">return</span> source;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 通过 exports.raw 属性告诉 Webpack 该 Loader 是否需要二进制数据</span></span><br><span class="line"><span class="built_in">module</span>.exports.raw = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Loader 的缓存加速。Webpack 会默认缓存所有 Loader 的处理结果，也就是说在需要被处理的文件或者其依赖的文件没有发生变化时， 是不会重新调用对应的 Loader 去执行转换操作的。不想让 webpack 缓存 Loader 的处理结果方法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 关闭该 Loader 的缓存功能</span></span><br><span class="line">  <span class="keyword">this</span>.cacheable(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">return</span> source;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="加载本地-Loader"><a href="#加载本地-Loader" class="headerlink" title="加载本地 Loader"></a>加载本地 Loader</h3><h4 id="1、Npm-link"><a href="#1、Npm-link" class="headerlink" title="1、Npm link"></a>1、Npm link</h4><p>Npm link 专门用于开发和调试本地 Npm 模块，能做到在不发布模块的情况下，把本地的一个正在开发的模块的源码链接到项目的 node_modules 目录下，让项目可以直接使用本地的 Npm 模块。<br>完成 Npm link 的步骤如下：</p>
+<ol>
+<li>确保正在开发的本地 Npm 模块（也就是正在开发的 Loader）的 package.json 已经正确配置好；</li>
+<li>在本地 Npm 模块根目录下执行 npm link，把本地模块注册到全局；</li>
+<li>在项目根目录下执行 npm link loader-name，把第 2 步注册到全局的本地 Npm 模块链接到项目的</li>
+<li>node_moduels 下，其中的 loader-name 是指在第 1 步中的 package.json 文件中配置的模块名称。</li>
+</ol>
+<h4 id="2、ResolveLoader"><a href="#2、ResolveLoader" class="headerlink" title="2、ResolveLoader"></a>2、ResolveLoader</h4><p>ResolveLoader 用于配置 Webpack 如何寻找 Loader。 默认情况下只会去 node_modules 目录下寻找，为了让 Webpack 加载放在本地项目中的 Loader 需要修改 resolveLoader.modules。</p>
+<p>假如本地的 Loader 在项目目录中的 ./loaders/loader-name 中，则需要如下配置：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  resolveLoader: &#123;</span><br><span class="line">    <span class="comment">// 去哪些目录下寻找 Loader，有先后顺序之分</span></span><br><span class="line">    modules: [<span class="string">"node_modules"</span>, <span class="string">"./loaders/"</span>],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>加上以上配置后， Webpack 会先去 node_modules 项目下寻找 Loader，如果找不到，会再去 ./loaders/ 目录下寻找。</p>
+<h1 id="webpack-打包相关错误"><a href="#webpack-打包相关错误" class="headerlink" title="webpack 打包相关错误"></a>webpack 打包相关错误</h1><h4 id="Error-Plugin-Preset-files-are-not-allowed-to-export-objects-only-functions"><a href="#Error-Plugin-Preset-files-are-not-allowed-to-export-objects-only-functions" class="headerlink" title="Error: Plugin/Preset files are not allowed to export objects, only functions."></a>Error: Plugin/Preset files are not allowed to export objects, only functions.</h4><p>这个报错是因为 babel 的版本冲突。两者版本要对应<br>babel-loader 8.x | babel 7.x</p>
+<blockquote>
+<p><code>npm install -D babel-loader @babel/core @babel/preset-env</code></p>
+</blockquote>
+<p>babel-loader 7.x | babel 6.x</p>
+<blockquote>
+<p><code>npm install -D babel-loader@7 babel-core babel-preset-env</code></p>
+</blockquote>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><h4 id="1、升级-babel-到-babel7-0"><a href="#1、升级-babel-到-babel7-0" class="headerlink" title="1、升级 babel 到 babel7.0"></a>1、升级 babel 到 babel7.0</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;@babel/core&quot;: &quot;^7.2.2&quot;,</span><br><span class="line">&quot;@babel/preset-env&quot;: &quot;^7.3.1&quot;,</span><br><span class="line">&quot;@babel/preset-react&quot;: &quot;^7.0.0&quot;,</span><br><span class="line">&quot;babel-loader&quot;: &quot;^8.0.5&quot;,</span><br></pre></td></tr></table></figure>
+
+<p>并且修改.babel 文件</p>
+<blockquote>
+<p><code>{ &quot;presets&quot;:[&quot;@babel/react&quot;,&quot;@babel/env&quot;,]}</code></p>
+</blockquote>
+<h4 id="2、降级到-babel6-0-版本"><a href="#2、降级到-babel6-0-版本" class="headerlink" title="2、降级到 babel6.0 版本"></a>2、降级到 babel6.0 版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;babel-core&quot;: &quot;^6.26.3&quot;,</span><br><span class="line">&quot;babel-preset-env&quot;: &quot;^1.7.0&quot;,</span><br><span class="line">&quot;babel-preset-react&quot;: &quot;^6.24.1&quot;,</span><br><span class="line">&quot;babel-loader&quot;: &quot;^7.1.5&quot;,</span><br></pre></td></tr></table></figure>
+
+<p>对应修改.babelrc 文件</p>
+<blockquote>
+<p><code>{ &quot;presets&quot;: [&quot;react&quot;, &quot;env&quot;]}</code></p>
+</blockquote>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000015088834" target="_blank" rel="noopener">webpack 原理</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/27/higher-order-component/" rel="next" title="关于React高阶组件">
+                <i class="fa fa-chevron-left"></i> 关于React高阶组件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#几个概念"><span class="nav-number">1.</span> <span class="nav-text">几个概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack-运行流程"><span class="nav-number">2.</span> <span class="nav-text">webpack 运行流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack-构建流程分解"><span class="nav-number">3.</span> <span class="nav-text">webpack 构建流程分解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#输出文件分析"><span class="nav-number">4.</span> <span class="nav-text">输出文件分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分割代码时的输出"><span class="nav-number">4.0.1.</span> <span class="nav-text">分割代码时的输出</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Loader"><span class="nav-number">5.</span> <span class="nav-text">Loader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Loader-基础"><span class="nav-number">5.0.1.</span> <span class="nav-text">Loader 基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载本地-Loader"><span class="nav-number">5.0.2.</span> <span class="nav-text">加载本地 Loader</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Npm-link"><span class="nav-number">5.0.2.1.</span> <span class="nav-text">1、Npm link</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、ResolveLoader"><span class="nav-number">5.0.2.2.</span> <span class="nav-text">2、ResolveLoader</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack-打包相关错误"><span class="nav-number">6.</span> <span class="nav-text">webpack 打包相关错误</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Error-Plugin-Preset-files-are-not-allowed-to-export-objects-only-functions"><span class="nav-number">6.0.0.1.</span> <span class="nav-text">Error: Plugin/Preset files are not allowed to export objects, only functions.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法："><span class="nav-number">6.0.0.2.</span> <span class="nav-text">解决方法：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1、升级-babel-到-babel7-0"><span class="nav-number">6.0.0.3.</span> <span class="nav-text">1、升级 babel 到 babel7.0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、降级到-babel6-0-版本"><span class="nav-number">6.0.0.4.</span> <span class="nav-text">2、降级到 babel6.0 版本</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
