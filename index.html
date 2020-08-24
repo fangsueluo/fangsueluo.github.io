@@ -240,6 +240,147 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/03/dependency/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/03/dependency/" itemprop="url">webpack3向4升级中具体问题及解决办法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-03T15:12:32+08:00">
+                2020-08-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-08-24T21:18:40+08:00">
+                2020-08-24
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>本篇记录 webpack3 升级到 webpack4 过程中遇到的问题及一些知识记录。</p>
+<h1 id="一、问题："><a href="#一、问题：" class="headerlink" title="一、问题："></a>一、问题：</h1><h3 id="1、TypeError-Cannot-read-property-‘stylus’-of-undefined"><a href="#1、TypeError-Cannot-read-property-‘stylus’-of-undefined" class="headerlink" title="1、TypeError: Cannot read property ‘stylus’ of undefined"></a>1、TypeError: Cannot read property ‘stylus’ of undefined</h3><p>解决方法：stylus-loader 3.0.1 =&gt; stylus-loader 3.0.2</p>
+<h3 id="2、以下这两种错误都是同一个问题"><a href="#2、以下这两种错误都是同一个问题" class="headerlink" title="2、以下这两种错误都是同一个问题"></a>2、以下这两种错误都是同一个问题</h3><p>1）Error: Chunk.entrypoints: Use Chunks.groupsIterable and filter by instanceof Entrypoint instead</p>
+<p>2）DeprecationWarning: Tapable.apply is deprecated. Call apply on the plugin directly instead</p>
+<p>原因：extract-text-webpack-plugin 当前版本不支持 webpack4</p>
+<p>有两种解决方法：<br>方法一：”extract-text-webpack-plugin”: “3.0.2” =&gt; “extract-text-webpack-plugin”: “4.0.0-beta.0”<br>方法二：extract-text-webpack-plugin 插件换成 mini-css-extract-plugin</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/03/dependency/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/16/frontend-pack/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1508,148 +1649,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/18/weixin_gongzhonghao/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fangsueluo">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fansueluo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/18/weixin_gongzhonghao/" itemprop="url">微信公众号开发</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-18T11:18:04+08:00">
-                2019-07-18
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2019-12-19T21:30:31+08:00">
-                2019-12-19
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>基于有了openid才能进行后续操作的功能，可以采用发布订阅模式进行通知；如果用户拒绝授权，可以在需要授权的操作之前多次让用户进行授权，否则无法进行下一步操作，直到用户愿意授权拿到授权信息为止。</p>
-</blockquote>
-<h2 id="1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）"><a href="#1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）" class="headerlink" title="1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）"></a>1、解决微信公众号网页授权只能设置一个回调域名的问题（获取code时，跨域了）</h2><p><a href="https://github.com/HADB/GetWeixinCode" target="_blank" rel="noopener">https://github.com/HADB/GetWeixinCode</a></p>
-<h2 id="2、ngrok内网穿透-本地调试"><a href="#2、ngrok内网穿透-本地调试" class="headerlink" title="2、ngrok内网穿透 本地调试"></a>2、ngrok内网穿透 本地调试</h2><p>下载ngrok，打开终端，进入ngork目录，执行./ngrok http &lt;端口号&gt;<br>进入微信公众号测试号后台，配置授权域名，    </p>
-<p>此时需要开启一个服务器，用来接收微信服务器发送的信息，启动服务node server.js</p>
-<p>此处用koa2框架调试，server.js：</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/18/weixin_gongzhonghao/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1702,7 +1701,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
