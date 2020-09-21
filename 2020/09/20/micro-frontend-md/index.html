@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="引言当一个项目代码越来越庞大，团队间协作不是那么容易的时候，大家就会希望可以通过分割成多个小项目，降低维护难度，我们期望有一种团队间、不同业务间单独维护的架构；当公司有一个技术栈老旧的项目，功能运行还算稳定，对于这种遗留系统来说，我们不想再花时间优化老旧系统，期望能跟上技术潮流，挑战新技术。我们期望有更好维护性、业务拆分更细粒度、多个技术栈共同嵌入一个应用中的架构模式，于是，微前端理念呼之欲出。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微前端初探">
+<meta property="og:url" content="http://yoursite.com/2020/09/20/micro-frontend-md/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="引言当一个项目代码越来越庞大，团队间协作不是那么容易的时候，大家就会希望可以通过分割成多个小项目，降低维护难度，我们期望有一种团队间、不同业务间单独维护的架构；当公司有一个技术栈老旧的项目，功能运行还算稳定，对于这种遗留系统来说，我们不想再花时间优化老旧系统，期望能跟上技术潮流，挑战新技术。我们期望有更好维护性、业务拆分更细粒度、多个技术栈共同嵌入一个应用中的架构模式，于是，微前端理念呼之欲出。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/09/20/micro-frontend-md/1.jpg">
+<meta property="og:updated_time" content="2020-09-21T13:23:05.667Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微前端初探">
+<meta name="twitter:description" content="引言当一个项目代码越来越庞大，团队间协作不是那么容易的时候，大家就会希望可以通过分割成多个小项目，降低维护难度，我们期望有一种团队间、不同业务间单独维护的架构；当公司有一个技术栈老旧的项目，功能运行还算稳定，对于这种遗留系统来说，我们不想再花时间优化老旧系统，期望能跟上技术潮流，挑战新技术。我们期望有更好维护性、业务拆分更细粒度、多个技术栈共同嵌入一个应用中的架构模式，于是，微前端理念呼之欲出。">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/20/micro-frontend-md/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/20/micro-frontend-md/">
+
+
+
+
+
+  <title>微前端初探 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/20/micro-frontend-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微前端初探</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-20T20:49:18+08:00">
+                2020-09-20
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-09-21T21:23:05+08:00">
+                2020-09-21
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>当一个项目代码越来越庞大，团队间协作不是那么容易的时候，大家就会希望可以通过分割成多个小项目，降低维护难度，我们期望有一种团队间、不同业务间单独维护的架构；当公司有一个技术栈老旧的项目，功能运行还算稳定，对于这种遗留系统来说，我们不想再花时间优化老旧系统，期望能跟上技术潮流，挑战新技术。我们期望有更好维护性、业务拆分更细粒度、多个技术栈共同嵌入一个应用中的架构模式，于是，微前端理念呼之欲出。</p>
+<h1 id="一、什么是微前端"><a href="#一、什么是微前端" class="headerlink" title="一、什么是微前端"></a>一、什么是微前端</h1><p>微前端是一种新模式，其中 Web 应用程序 UI（前端）由一些半独立的片段组成，可以由不同的团队使用不同的技术来构建。微前端是一种类似于微服务的架构，它将微服务的理念应用于浏览器端，即将 Web 应用由单一的单体应用转变为多个小型前端应用聚合为一的应用。各个前端应用还可以独立运行、独立开发、独立部署。</p>
+<h1 id="二、微前端的作用"><a href="#二、微前端的作用" class="headerlink" title="二、微前端的作用"></a>二、微前端的作用</h1><p>微前端的作用是为了解决单体应用在一个相对长的时间跨度下，由于参与的人员、团队的增多、变迁，从一个普通应用演变成一个巨石应用后，随之而来的应用不可维护的问题。其带来的核心作用有一下几点：</p>
+<ul>
+<li>技术栈无关 主框架、子应用可以使用不同的技术栈，子应用具备完全自主权</li>
+<li>独立开发、独立部署 子应用仓库独立，前后端可独立开发，部署完成后主框架自动完成同步更新</li>
+<li>独立运行时 每个子应用之间状态隔离，运行时状态不共享<a id="more"></a>
+
+</li>
+</ul>
+<h1 id="三、实现微前端架构的-6-种方式"><a href="#三、实现微前端架构的-6-种方式" class="headerlink" title="三、实现微前端架构的 6 种方式"></a>三、实现微前端架构的 6 种方式</h1><p>一个大型的应用，通常需要由多个项目组成，那么就涉及到多应用拆分。<br>技术方式<br>从技术实践上，微前端架构可以采用以下的几种方式进行：</p>
+<h3 id="1、路由分发式"><a href="#1、路由分发式" class="headerlink" title="1、路由分发式"></a>1、路由分发式</h3><p>路由分发式微前端，即通过路由将不同的业务分发到不同的、独立前端应用上。其通常可以通过 HTTP 服务器的反向代理来实现，又或者是应用框架自带的路由来解决。但是这种方式看上去更像是多个前端应用的聚合，即我们只是将这些不同的前端应用拼凑到一起，使他们看起来像是一个完整的整体。但是它们并不是，每次用户从 A 应用到 B 应用的时候，往往需要刷新一下页面。一个页面只有唯一一个应用。目前这种方式是最常用的微前端方案，我们团队目前也是采用这种方案。</p>
+<p>适用性：</p>
+<ul>
+<li>不同技术栈之间差异比较大，难以兼容、迁移、改造</li>
+<li>项目不想花费大量的时间在这个系统的改造上</li>
+<li>现有的系统在未来将会被取代</li>
+<li>系统功能已经很完善，基本不会有新需求</li>
+</ul>
+<p>路由分发式微前端示意如下：</p>
+<img src="/2020/09/20/micro-frontend-md/1.jpg" title="路由分发式">
+
+<p>以下是基于路由分发的 Nginx 配置示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  www.phodal.com;</span><br><span class="line">    location /api/ &#123;</span><br><span class="line">      proxy_pass http://http://172.31.25.15:8000/api;</span><br><span class="line">    &#125;</span><br><span class="line">    location /web/admin &#123;</span><br><span class="line">      proxy_pass http://serverA/web/admin;</span><br><span class="line">    &#125;</span><br><span class="line">    location /web/notifications &#123;</span><br><span class="line">      proxy_pass http://serverB/web/notifications;</span><br><span class="line">    &#125;</span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass /;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、前端容器化：iFrame"><a href="#2、前端容器化：iFrame" class="headerlink" title="2、前端容器化：iFrame"></a>2、前端容器化：iFrame</h3><p>iFrame 是一种古老的实现微前端的方式，它能有效地将另一个网页/单页面应用嵌入到当前页面中，两个页面间的 CSS 和 JavaScript 是相互隔离的——除去 iframe 父子通信部分的代码，它们之间的代码是完全不相互干扰的。iframe 便相当于是创建了一个全新的独立的宿主环境，类似于沙箱隔离，它意味着前端应用之间可以相互独立运行。</p>
+<p>采用 iframe 有几个重要的前提：</p>
+<ul>
+<li>网站不需要 SEO 支持</li>
+<li>拥有相应的应用管理机制。</li>
+</ul>
+<p>采用 iframe 时，我们同时需要考虑：</p>
+<ul>
+<li>设计管理应用机制：<br>在什么情况下，我们会去加载、卸载这些应用；在这个过程中，采用怎样的动画过渡，让用户看起来更加自然。</li>
+<li>设计应用通讯机制：<br>直接在每个应用中创建 postMessage 事件并监听，并不是一个友好的事情。其本身对于应用的侵入性太强，因此通过 iframeEl.contentWindow 去获取 iFrame 元素的 Window 对象是一个更简化的做法。随后，就需要定义一套通讯规范：事件名采用什么格式、什么时候开始监听事件等等。</li>
+</ul>
+<h3 id="3、自制框架兼容应用"><a href="#3、自制框架兼容应用" class="headerlink" title="3、自制框架兼容应用"></a>3、自制框架兼容应用</h3><p>在页面合适的地方引入或者创建 DOM，用户操作时，加载对应的应用（触发应用的启动），并能卸载应用。这种方式的上手难度相对比较高，但是后期订制及可维护性比较方便。在不考虑每次加载应用带来的用户体验问题，其唯一存在的风险可能是：第三方库不兼容。</p>
+<h3 id="4、组合式集成：将应用微件化"><a href="#4、组合式集成：将应用微件化" class="headerlink" title="4、组合式集成：将应用微件化"></a>4、组合式集成：将应用微件化</h3><p>通过软件工程的方式在构建前、构建时、构建后等步骤中，对应用进行一步的拆分，并重新组合。其前提是必须使用同一个框架，并且要制定规范，用来统一依赖、规范应用的组件及路由、共享 tong y 哦功能代码等。<br>这种方式常见的实现：</p>
+<ul>
+<li>独立构建组件和应用，生成 chunk 文件，构建后再归类生成的 chunk 文件。（这种方式更类似于微服务，但是成本更高）</li>
+<li>开发时独立开发组件或应用，集成时合并组件和应用，最后生成单体的应用。</li>
+<li>在运行时，加载应用的 Runtime，随后加载对应的应用代码和模板。</li>
+</ul>
+<h3 id="5、纯-Web-Components-技术构建"><a href="#5、纯-Web-Components-技术构建" class="headerlink" title="5、纯 Web Components 技术构建"></a>5、纯 Web Components 技术构建</h3><blockquote>
+<p>Web Components 是一套不同的技术，允许您创建可重用的定制元素（它们的功能封装在您的代码之外）并且在您的 Web 应用中使用它们。</p>
+</blockquote>
+<p>它主要由四项技术组件：</p>
+<ul>
+<li>Custom elements，允许开发者创建自定义的元素。</li>
+<li>Shadow DOM，即影子 DOM，通常是将 Shadow DOM 附加到主文档 DOM 中，并可以控制其关联的功能。而这个 Shadow DOM 则是不能直接用其它主文档 DOM 来控制的。</li>
+<li>HTML templates，即 <template> 和 <slot> 元素，用于编写不在页面中显示的标记模板。</slot></template></li>
+<li>HTML Imports，用于引入自定义组件。</li>
+</ul>
+<p>Web Components 中的 ShadowDOM 更像是新一代的前端 DOM 容器。而遗憾的是并不是所有的浏览器，都可以完全支持 Web Components。</p>
+<h3 id="6、结合-Web-Components-构建"><a href="#6、结合-Web-Components-构建" class="headerlink" title="6、结合 Web Components 构建"></a>6、结合 Web Components 构建</h3><p>Web Components 离现在的我们太远，但是我们可以开始采用这种方式来构建我们的应用。<br>集成在现有框架中的 Web Components，类似于 Stencil 的形式，将组件直接构建成 Web Components 形式的组件。 Stencil 仍然也只是支持最近的一些浏览器，比如：Chrome、Safari、Firefox、Edge 和 IE11。</p>
+<h4 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h4><ul>
+<li><a href="https://github.com/phodal/microfrontends" target="_blank" rel="noopener">微前端的那些事儿</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/78362028" target="_blank" rel="noopener">可能是你见过最完善的微前端解决方案</a></li>
+<li><a href="https://www.infoq.cn/article/xm_AaiOTXmLpPgWvX9y9" target="_blank" rel="noopener">微前端如何落地</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/03/dependency/" rel="next" title="webpack3向4升级中具体问题及解决办法">
+                <i class="fa fa-chevron-left"></i> webpack3向4升级中具体问题及解决办法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是微前端"><span class="nav-number">2.</span> <span class="nav-text">一、什么是微前端</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、微前端的作用"><span class="nav-number">3.</span> <span class="nav-text">二、微前端的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、实现微前端架构的-6-种方式"><span class="nav-number">4.</span> <span class="nav-text">三、实现微前端架构的 6 种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、路由分发式"><span class="nav-number">4.0.1.</span> <span class="nav-text">1、路由分发式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、前端容器化：iFrame"><span class="nav-number">4.0.2.</span> <span class="nav-text">2、前端容器化：iFrame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、自制框架兼容应用"><span class="nav-number">4.0.3.</span> <span class="nav-text">3、自制框架兼容应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、组合式集成：将应用微件化"><span class="nav-number">4.0.4.</span> <span class="nav-text">4、组合式集成：将应用微件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、纯-Web-Components-技术构建"><span class="nav-number">4.0.5.</span> <span class="nav-text">5、纯 Web Components 技术构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、结合-Web-Components-构建"><span class="nav-number">4.0.6.</span> <span class="nav-text">6、结合 Web Components 构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章："><span class="nav-number">4.0.6.1.</span> <span class="nav-text">参考文章：</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
