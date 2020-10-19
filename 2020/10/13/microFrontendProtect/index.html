@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="微前端框架目前相对知名的微前端框架有 single-spa，icestark，qiankun。本文主要记录基于 qiankun 跑一个基本的微前端 demo。 qiankun 框架 qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。  qiankun 的核心设计理念：简单、 解耦/技术栈无关。因此给我们广大前端开发者提供了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微前端实践之qiankun框架">
+<meta property="og:url" content="http://yoursite.com/2020/10/13/microFrontendProtect/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="微前端框架目前相对知名的微前端框架有 single-spa，icestark，qiankun。本文主要记录基于 qiankun 跑一个基本的微前端 demo。 qiankun 框架 qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。  qiankun 的核心设计理念：简单、 解耦/技术栈无关。因此给我们广大前端开发者提供了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-10-19T12:19:27.485Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微前端实践之qiankun框架">
+<meta name="twitter:description" content="微前端框架目前相对知名的微前端框架有 single-spa，icestark，qiankun。本文主要记录基于 qiankun 跑一个基本的微前端 demo。 qiankun 框架 qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。  qiankun 的核心设计理念：简单、 解耦/技术栈无关。因此给我们广大前端开发者提供了">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/10/13/microFrontendProtect/">
+
+
+
+
+
+  <title>微前端实践之qiankun框架 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/13/microFrontendProtect/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微前端实践之qiankun框架</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-13T10:56:33+08:00">
+                2020-10-13
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-19T20:19:27+08:00">
+                2020-10-19
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="微前端框架"><a href="#微前端框架" class="headerlink" title="微前端框架"></a>微前端框架</h1><p>目前相对知名的微前端框架有 single-spa，icestark，qiankun。本文主要记录基于 qiankun 跑一个基本的微前端 demo。</p>
+<h1 id="qiankun-框架"><a href="#qiankun-框架" class="headerlink" title="qiankun 框架"></a>qiankun 框架</h1><blockquote>
+<p>qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。</p>
+</blockquote>
+<p>qiankun 的核心设计理念：简单、 解耦/技术栈无关。因此给我们广大前端开发者提供了开箱即用对便利。</p>
+<h1 id="实现："><a href="#实现：" class="headerlink" title="实现："></a>实现：</h1><h2 id="构建主应用基座"><a href="#构建主应用基座" class="headerlink" title="构建主应用基座"></a>构建主应用基座</h2><p>本次实践以 react 为基座，首先创建一个 react 应用，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app my-app</span><br><span class="line">cd my-app</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>然后安装 qiankun： <code>yarn add qiankun # 或者 npm i qiankun -S</code></p>
+<h3 id="注册、启动微应用"><a href="#注册、启动微应用" class="headerlink" title="注册、启动微应用"></a>注册、启动微应用</h3><p>在入口文件中注册微应用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; registerMicroApps, start &#125; <span class="keyword">from</span> <span class="string">"qiankun"</span>;</span><br><span class="line"></span><br><span class="line">registerMicroApps([</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"micro-react-test"</span>, <span class="comment">// app name registered</span></span><br><span class="line">    entry: <span class="string">"//localhost:7101"</span>,</span><br><span class="line">    container: <span class="string">"#root"</span>,</span><br><span class="line">    activeRule: <span class="string">"/react16"</span>,</span><br><span class="line">    props: &#123; <span class="attr">msg</span>: <span class="string">"传入子应用数据"</span> &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"vueTestMicro"</span>,</span><br><span class="line">    entry: <span class="string">"//localhost:7100"</span>,</span><br><span class="line">    container: <span class="string">"#root"</span>,</span><br><span class="line">    activeRule: <span class="string">"/vue"</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动微应用</span></span><br><span class="line">start();</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当微应用信息注册完之后，一旦浏览器的 url 发生变化，便会自动触发 qiankun 的匹配逻辑，所有 activeRule 规则匹配上的微应用就会被插入到指定的 container 中，同时依次调用微应用暴露出的生命周期钩子。</p>
+</blockquote>
+<h3 id="接入微应用"><a href="#接入微应用" class="headerlink" title="接入微应用"></a>接入微应用</h3><p>微应用不需要安装 qiankun，只需要在入口文件导出相应的生命周期钩子，在入口 js (通常就是你配置的 webpack 的 entry js) 导出 bootstrap、mount、unmount 三个生命周期钩子，以供主应用在适当的时机调用。另外，由于主应用 fetch 微应用资源，可以是不同端口甚至不同域名，属于跨域行为，所以需要在微应用中配置允许跨域。</p>
+<h3 id="react-微应用项目接入"><a href="#react-微应用项目接入" class="headerlink" title="react 微应用项目接入"></a>react 微应用项目接入</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 入口文件index.js</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; container &#125; = props;</span><br><span class="line">  <span class="built_in">console</span>.log(props, <span class="string">"react app render function"</span>);</span><br><span class="line">  ReactDOM.render(</span><br><span class="line">    &lt;App data=&#123;props&#125; /&gt;,</span><br><span class="line">    container</span><br><span class="line">      ? container.querySelector(<span class="string">"#root"</span>)</span><br><span class="line">      : <span class="built_in">document</span>.getElementById(<span class="string">"root"</span>)</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// __POWERED_BY_QIANKUN__ 是 qiankun 应用的全局变量</span></span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">window</span>.__POWERED_BY_QIANKUN__) &#123;</span><br><span class="line">  render(&#123; <span class="attr">container</span>: <span class="literal">null</span> &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*bootstrap 只会在微应用初始化的时候调用一次，下次微应用重新进入时会直接调用 mount 钩子，不会再重复触发bootstrap*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">bootstrap</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*应用每次进入都会调用 mount 方法，通常我们在这里触发应用的渲染方法*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">mount</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  render(props);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*应用每次 切出/卸载 会调用的方法，通常在这里我们会卸载微应用的应用实例*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">unmount</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; container &#125; = props;</span><br><span class="line"></span><br><span class="line">  ReactDOM.unmountComponentAtNode(</span><br><span class="line">    container</span><br><span class="line">      ? container.querySelector(<span class="string">"#root"</span>)</span><br><span class="line">      : <span class="built_in">document</span>.getElementById(<span class="string">"root"</span>)</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*可选生命周期钩子，仅使用 loadMicroApp 方式加载微应用时生效*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"update props"</span>, props);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意：通过-create-react-app-工具构建的项目，需要安装依赖重写配置"><a href="#注意：通过-create-react-app-工具构建的项目，需要安装依赖重写配置" class="headerlink" title="注意：通过 create-react-app 工具构建的项目，需要安装依赖重写配置"></a>注意：通过 create-react-app 工具构建的项目，需要安装依赖重写配置</h4><p>重写 react 配置：</p>
+<ol>
+<li>安装依赖：<code>yarn add react-app-rewired -D</code></li>
+<li>重新配置项目启动脚本，在 package.json 文件中修改如下</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"start"</span>: <span class="string">"react-app-rewired start"</span>,</span><br><span class="line">  <span class="string">"build"</span>: <span class="string">"react-app-rewired build"</span>,</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"react-app-rewired test"</span>,</span><br><span class="line">  <span class="string">"eject"</span>: <span class="string">"react-app-rewired eject"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>项目根目录下创建配置文件 config-overrides.js，其内容如下：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; name &#125; = <span class="built_in">require</span>(<span class="string">"./package.json"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  webpack: <span class="function">(<span class="params">config</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 微应用的包名，这里与主应用中注册的微应用名称一致</span></span><br><span class="line">    config.output.library = name;</span><br><span class="line">    <span class="comment">// 将你的 library 暴露为所有的模块定义下都可运行的方式</span></span><br><span class="line">    config.output.libraryTarget = <span class="string">"umd"</span>;</span><br><span class="line">    <span class="comment">// 按需加载相关，设置为 webpackJsonp_VueMicroApp 即可</span></span><br><span class="line">    config.output.jsonpFunction = <span class="string">`webpackJsonp_<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">    config.resolve.alias = &#123;</span><br><span class="line">      ...config.resolve.alias,</span><br><span class="line">      <span class="string">"@"</span>: path.resolve(__dirname, <span class="string">"src"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devServer: <span class="function"><span class="keyword">function</span> (<span class="params">configFunction</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">proxy, allowedHost</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> config = configFunction(proxy, allowedHost);</span><br><span class="line">      <span class="comment">// 关闭主机检查，使微应用可以被 fetch</span></span><br><span class="line">      config.disableHostCheck = <span class="literal">true</span>;</span><br><span class="line">      <span class="comment">// 配置跨域请求头，解决开发环境的跨域问题</span></span><br><span class="line">      config.headers = &#123;</span><br><span class="line">        <span class="string">"Access-Control-Allow-Origin"</span>: <span class="string">"*"</span>,</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="comment">// 配置 history 模式</span></span><br><span class="line">      config.historyApiFallback = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> config;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="vue-微应用项目接入"><a href="#vue-微应用项目接入" class="headerlink" title="vue 微应用项目接入"></a>vue 微应用项目接入</h3><p>安装：<code>npm install -g @vue/cli</code> OR <code>yarn global add @vue/cli</code><br>创建一个项目：<code>vue create my-project</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 入口文件main.js</span></span><br><span class="line"><span class="keyword">let</span> instance = <span class="literal">null</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  instance = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    render: <span class="function">(<span class="params">h</span>) =&gt;</span> h(App),</span><br><span class="line">  &#125;).$mount(<span class="string">"#app"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">window</span>.__POWERED_BY_QIANKUN__) &#123;</span><br><span class="line">  render();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">bootstrap</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"react app bootstraped"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">mount</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(props);</span><br><span class="line">  render();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">unmount</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  instance.$destroy();</span><br><span class="line">  instance = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"update props"</span>, props);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>覆盖 vue 默认配置，新建 vue.config.js 文件:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; name &#125; = <span class="built_in">require</span>(<span class="string">"./package"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    <span class="comment">// 监听端口</span></span><br><span class="line">    port: <span class="number">7100</span>,</span><br><span class="line">    <span class="comment">// 关闭主机检查，使微应用可以被 fetch</span></span><br><span class="line">    disableHostCheck: <span class="literal">true</span>,</span><br><span class="line">    <span class="comment">// 配置跨域请求头，解决开发环境的跨域问题</span></span><br><span class="line">    headers: &#123;</span><br><span class="line">      <span class="string">"Access-Control-Allow-Origin"</span>: <span class="string">"*"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  configureWebpack: &#123;</span><br><span class="line">    resolve: &#123;</span><br><span class="line">      alias: &#123;</span><br><span class="line">        <span class="string">"@"</span>: path.resolve(__dirname, <span class="string">"src"</span>),</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    output: &#123;</span><br><span class="line">      <span class="comment">// 微应用的包名，这里与主应用中注册的微应用名称一致</span></span><br><span class="line">      library: name,</span><br><span class="line">      <span class="comment">// 将你的 library 暴露为所有的模块定义下都可运行的方式</span></span><br><span class="line">      libraryTarget: <span class="string">"umd"</span>,</span><br><span class="line">      <span class="comment">// 按需加载相关，设置为 webpackJsonp_VueMicroApp 即可</span></span><br><span class="line">      jsonpFunction: <span class="string">`webpackJsonp_<span class="subst">$&#123;name&#125;</span>`</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>至此，能跑起来最简单的微前端环境了。</p>
+<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="主应用注册微应用的-name-必须和微应用-output-library-的名字一致并且所有微应用名称应该唯一，否则会报错：Application-died-in-status-LOADING-SOURCE-CODE"><a href="#主应用注册微应用的-name-必须和微应用-output-library-的名字一致并且所有微应用名称应该唯一，否则会报错：Application-died-in-status-LOADING-SOURCE-CODE" class="headerlink" title="主应用注册微应用的 name 必须和微应用 output.library 的名字一致并且所有微应用名称应该唯一，否则会报错：Application died in status LOADING_SOURCE_CODE"></a>主应用注册微应用的 name 必须和微应用 output.library 的名字一致并且所有微应用名称应该唯一，否则会报错：Application died in status LOADING_SOURCE_CODE</h3><h3 id="微应用的静态资源必须支持跨域，如果报错："><a href="#微应用的静态资源必须支持跨域，如果报错：" class="headerlink" title="微应用的静态资源必须支持跨域，如果报错："></a>微应用的静态资源必须支持跨域，如果报错：</h3><p>Access to fetch at ‘<a href="http://localhost:3002/&#39;" target="_blank" rel="noopener">http://localhost:3002/&#39;</a> from origin ‘<a href="http://localhost:3001&#39;" target="_blank" rel="noopener">http://localhost:3001&#39;</a> has been blocked by CORS policy: No ‘Access-Control-Allow-Origin’ header is present on the requested resource. If an opaque response serves your needs, set the request’s mode to ‘no-cors’ to fetch the resource with CORS disabled.<br>请在微应用中配置跨域允许</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://github.com/umijs/qiankun/tree/master/examples" target="_blank" rel="noopener">qiankun 官方 example</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1627709" target="_blank" rel="noopener">万字解析微前端、微前端框架 qiankun 以及源码</a></li>
+<li><a href="https://juejin.im/post/6844904185910018062" target="_blank" rel="noopener">qiankun 微前端方案实践及总结</a></li>
+<li><a href="https://blog.csdn.net/qq_15390381/article/details/103924946" target="_blank" rel="noopener">微前端实战看这篇就够了 - Vue 项目篇</a></li>
+<li><a href="https://www.yuque.com/zaotalk/posts/dfqyh7" target="_blank" rel="noopener">相对知名的框架：single-spa，icestark，qiankun</a></li>
+<li><a href="https://juejin.im/post/6844904182814605325" target="_blank" rel="noopener">体验微前端（qiankun）</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/20/micro-frontend-md/" rel="next" title="微前端初探">
+                <i class="fa fa-chevron-left"></i> 微前端初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#微前端框架"><span class="nav-number">1.</span> <span class="nav-text">微前端框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qiankun-框架"><span class="nav-number">2.</span> <span class="nav-text">qiankun 框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现："><span class="nav-number">3.</span> <span class="nav-text">实现：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建主应用基座"><span class="nav-number">3.1.</span> <span class="nav-text">构建主应用基座</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册、启动微应用"><span class="nav-number">3.1.1.</span> <span class="nav-text">注册、启动微应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接入微应用"><span class="nav-number">3.1.2.</span> <span class="nav-text">接入微应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react-微应用项目接入"><span class="nav-number">3.1.3.</span> <span class="nav-text">react 微应用项目接入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意：通过-create-react-app-工具构建的项目，需要安装依赖重写配置"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">注意：通过 create-react-app 工具构建的项目，需要安装依赖重写配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue-微应用项目接入"><span class="nav-number">3.1.4.</span> <span class="nav-text">vue 微应用项目接入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题记录"><span class="nav-number">3.2.</span> <span class="nav-text">问题记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主应用注册微应用的-name-必须和微应用-output-library-的名字一致并且所有微应用名称应该唯一，否则会报错：Application-died-in-status-LOADING-SOURCE-CODE"><span class="nav-number">3.2.1.</span> <span class="nav-text">主应用注册微应用的 name 必须和微应用 output.library 的名字一致并且所有微应用名称应该唯一，否则会报错：Application died in status LOADING_SOURCE_CODE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微应用的静态资源必须支持跨域，如果报错："><span class="nav-number">3.2.2.</span> <span class="nav-text">微应用的静态资源必须支持跨域，如果报错：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">3.2.3.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
