@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="无服务器的概述无服务器（Serverless）不是表示没有服务器，而表示当您在使用 Serverless 时，您无需关心底层资源，也无需登录服务器和优化服务器，只需关注最核心的代码片段，即可跳过复杂的、繁琐的基本工作。核心的代码片段完全由事件或者请求触发，平台根据请求自动平行调整服务资源。Serverless 拥有近乎无限的扩容能力，空闲时，不运行任何资源。代码运行无状态，可以轻易实现快速迭代、极">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Serverless + WebSocket 实时消息推送">
+<meta property="og:url" content="http://yoursite.com/2020/11/14/serverlessWebSocket/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="无服务器的概述无服务器（Serverless）不是表示没有服务器，而表示当您在使用 Serverless 时，您无需关心底层资源，也无需登录服务器和优化服务器，只需关注最核心的代码片段，即可跳过复杂的、繁琐的基本工作。核心的代码片段完全由事件或者请求触发，平台根据请求自动平行调整服务资源。Serverless 拥有近乎无限的扩容能力，空闲时，不运行任何资源。代码运行无状态，可以轻易实现快速迭代、极">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/11/14/serverlessWebSocket/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/11/14/serverlessWebSocket/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/11/14/serverlessWebSocket/3.png">
+<meta property="og:updated_time" content="2020-11-14T09:32:57.793Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Serverless + WebSocket 实时消息推送">
+<meta name="twitter:description" content="无服务器的概述无服务器（Serverless）不是表示没有服务器，而表示当您在使用 Serverless 时，您无需关心底层资源，也无需登录服务器和优化服务器，只需关注最核心的代码片段，即可跳过复杂的、繁琐的基本工作。核心的代码片段完全由事件或者请求触发，平台根据请求自动平行调整服务资源。Serverless 拥有近乎无限的扩容能力，空闲时，不运行任何资源。代码运行无状态，可以轻易实现快速迭代、极">
+<meta name="twitter:image" content="http://yoursite.com/2020/11/14/serverlessWebSocket/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/11/14/serverlessWebSocket/">
+
+
+
+
+
+  <title>Serverless + WebSocket 实时消息推送 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/14/serverlessWebSocket/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Serverless + WebSocket 实时消息推送</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-14T16:01:45+08:00">
+                2020-11-14
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-14T17:32:57+08:00">
+                2020-11-14
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="无服务器的概述"><a href="#无服务器的概述" class="headerlink" title="无服务器的概述"></a>无服务器的概述</h1><p>无服务器（Serverless）不是表示没有服务器，而表示当您在使用 Serverless 时，您无需关心底层资源，也无需登录服务器和优化服务器，只需关注最核心的代码片段，即可跳过复杂的、繁琐的基本工作。核心的代码片段完全由事件或者请求触发，平台根据请求自动平行调整服务资源。Serverless 拥有近乎无限的扩容能力，空闲时，不运行任何资源。代码运行无状态，可以轻易实现快速迭代、极速部署。</p>
+<h1 id="什么是-Serverless"><a href="#什么是-Serverless" class="headerlink" title="什么是 Serverless"></a>什么是 Serverless</h1><p>Serverless 圈内俗称为“无服务器架构”,Serverless 是一种<strong>软件系统架构思想和方法</strong>，它的核心思想是<strong>用户无须关注支撑应用服务运行的底层主机</strong>。所谓“无服务器”，并不是说基于 Serverless 架构的软件应用不需要服务器就可以运行，其指的是用户无须关心软件应用运行涉及的底层服务器的状态、资源（比如 CPU、内存、磁盘及网络）及数量。软件应用正常运行所需要的计算资源由底层的云计算平台动态提供。</p>
+<a id="more"></a>
+
+<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>无状态：因为每次函数执行，可能使用的都是不同的容器，无法进行内存或数据共享。如果要共享数据，则只能通过第三方服务，比如 Redis，COS 等。</li>
+<li>无运维：使用 Serverless 我们不需要关心服务器，不需要关心运维。这也是 Serverless 思想的核心。</li>
+<li>事件驱动编程：Serverless 的运行才计算，便意味着他是事件驱动式计算。</li>
+<li>低成本：使用 Serverless 成本很低，因为我们只需要为每次函数的运行付费。函数不运行，则不花钱，也不会浪费服务器资源。<ul>
+<li>在 Serverless 应用中，开发者只需要专注于业务，剩下的运维等工作都不需要操心</li>
+<li>Serverless 是真正的按需使用，请求到来时才开始运行</li>
+<li>Serverless 是按运行时间和内存来算钱的</li>
+<li>Serverless 应用严重依赖于特定的云平台、第三方服务</li>
+</ul>
+</li>
+</ul>
+<h4 id="Serverless-的优势"><a href="#Serverless-的优势" class="headerlink" title="Serverless 的优势"></a>Serverless 的优势</h4><ul>
+<li>降低启动成本</li>
+<li>减少运营成本</li>
+<li>降低开发成本</li>
+<li>实现快速上线</li>
+<li>更快的部署流水线</li>
+<li>更快的开发速度</li>
+<li>系统安全性更高</li>
+<li>适应微服务架构</li>
+<li>自动扩展能力</li>
+</ul>
+<h4 id="Serverless-的缺点"><a href="#Serverless-的缺点" class="headerlink" title="Serverless 的缺点"></a>Serverless 的缺点</h4><ul>
+<li>不适合有状态的服务</li>
+<li>不适合长时间运行应用</li>
+<li>完全依赖于第三方服务</li>
+<li>冷启动时间较长</li>
+<li>缺乏调试和开发工具</li>
+</ul>
+<h4 id="Serverless-的适用场景"><a href="#Serverless-的适用场景" class="headerlink" title="Serverless 的适用场景"></a>Serverless 的适用场景</h4><ul>
+<li>发送通知</li>
+<li>WebHook</li>
+<li>轻量级 API</li>
+<li>物联网</li>
+<li>数据统计分析</li>
+<li>Trigger 及定时任务</li>
+<li>精益创业</li>
+<li>Chat 机器人</li>
+</ul>
+<h1 id="什么是-Serverless-Framework"><a href="#什么是-Serverless-Framework" class="headerlink" title="什么是 Serverless Framework"></a>什么是 Serverless Framework</h1><p>Serverless Framework 是业界非常受欢迎的<strong>无服务器应用框架</strong>，开发者无需关心底层资源即可部署完整可用的 Serverless 应用架构。Serverless Framework 具有资源编排、自动伸缩、事件驱动等能力，覆盖编码-调试-测试-部署等全生命周期，帮助开发者通过联动云资源，迅速构建 Serverless 应用。</p>
+<h1 id="腾讯云云函数"><a href="#腾讯云云函数" class="headerlink" title="腾讯云云函数"></a>腾讯云云函数</h1><p>腾讯云为应用开发者提供的一站式后端云服务。腾讯云云函数是腾讯云提供的 Serverless 执行环境。您只需编写简单的、目的单一的云函数即可将它与您的腾讯云基础设施及其他云服务产生的事件关联。</p>
+<h1 id="Serverless-Framework-和云函数有什么区别？"><a href="#Serverless-Framework-和云函数有什么区别？" class="headerlink" title="Serverless Framework 和云函数有什么区别？"></a>Serverless Framework 和云函数有什么区别？</h1><p>云函数（Serverless Cloud Function，SCF）是腾讯云为企业和开发者们提供的<strong>无服务器执行环境</strong>，帮助开发者在无需购买和管理服务器的情况下运行代码 。<br>Serverless Framework 是<strong>无服务器应用框架</strong>，提供将云函数 SCF、API 网关、对象存储 COS、云数据库 DB 等资源组合的业务框架，开发者可以直接基于框架编写业务逻辑，而无需关注底层资源的配置和管理。</p>
+<h1 id="安装-serverless"><a href="#安装-serverless" class="headerlink" title="安装 serverless"></a>安装 serverless</h1><p>npm install -g serverless</p>
+<blockquote>
+<p>使用 Node.js10.0 及以上版本，否则 Component V2 部署有可能报错</p>
+</blockquote>
+<h1 id="Nodejs-开发调试"><a href="#Nodejs-开发调试" class="headerlink" title="Nodejs 开发调试"></a>Nodejs 开发调试</h1><p><code>sls dev</code> 开发时调试<br><code>sls deploy</code> 发布</p>
+<h1 id="腾讯云-serverless-组件"><a href="#腾讯云-serverless-组件" class="headerlink" title="腾讯云 serverless 组件"></a>腾讯云 serverless 组件</h1><ul>
+<li>云函数 SCF 组件</li>
+<li>API 网关组件</li>
+<li>对象存储 COS 组件</li>
+<li>内容分发网络 CDN 组件</li>
+<li>数据库 PostgreSQL 组件</li>
+<li>私有网络 VPC 组件</li>
+</ul>
+<p>本篇，我们用 serverless+websocket 实现 IM，用到了云函数组件，API 网关组件，存储的话用 COS 组件或者数据库组件。</p>
+<h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><p>由于云函数是无状态且以触发式运行，即在有事件到来时才会被触发，因此，为了实现 WebSocket，云函数与 API 网关相结合，通过 API 网关承接及保持与客户端的连接。当客户端有消息发出时，会先传递给 API 网关，再由 API 网关触发云函数执行。当服务端云函数要向客户端发送消息时，会先由云函数将消息 POST 到 API 网关的反向推送链接，再由 API 网关向客户端完成消息的推送。</p>
+<img src="/2020/11/14/serverlessWebSocket/1.png" title="WebSocket">
+
+<p>对于 WebSocket 整个生命周期的事件，云函数和 API 网关的处理过程如下：</p>
+<ul>
+<li>连接建立：客户端与 API 网关建立 WebSocket 连接，API 网关将连接建立事件发送给 SCF。</li>
+<li>数据上行：客户端通过 WebSocket 发送数据，API 网关将数据转发送给 SCF。</li>
+<li>数据下行：SCF 通过向 API 网关指定的推送地址发送请求，API 网关收到后会将数据通过 WebSocket 发送给客户端。</li>
+<li>客户端断开：客户端请求断开连接，API 网关将连接断开事件发送给 SCF。</li>
+<li>服务端断开：SCF 通过向 API 网关指定的推送地址发送断开请求，API 网关收到后断开 WebSocket 连接。</li>
+</ul>
+<p>因此，API 网关与 SCF 之间的交互，因此我们需要创建上图中的三个云函数：</p>
+<ul>
+<li>注册函数：在客户端发起和 API 网关之间建立 WebSocket 连接时触发该函数，通知 SCF WebSocket 连接的 secConnectionID。通常会在该函数记录 secConnectionID 到持久存储中，用于后续数据的反向推送。</li>
+<li>清理函数：在客户端主动发起 WebSocket 连接中断请求时触发该函数，通知 SCF 准备断开连接的 secConnectionID。通常会在该函数清理持久存储中记录的该 secConnectionID。</li>
+<li>传输函数：在客户端通过 WebSocket 连接发送数据时触发该函数，告知 SCF 连接的 secConnectionID 以及发送的数据。通常会在该函数处理业务数据。例如，是否将数据推送给持久存储中的其他 secConnectionID。</li>
+</ul>
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><p>下面是一个最简单的 serverless+websocket 的实现。</p>
+<p>1、腾讯云控制台：可以在腾讯云控制台根据教程一步步创建：<a href="https://cloud.tencent.com/document/product/583/32971" target="_blank" rel="noopener">https://cloud.tencent.com/document/product/583/32971</a></p>
+<p>2、编辑器里代码实现：</p>
+<h3 id="创建云函数"><a href="#创建云函数" class="headerlink" title="创建云函数"></a>创建云函数</h3><p>创建 serverless 根目录，然后在目录控制台输入：serverless，按提示选择 SCF 模板，一路确定，就会生成了一个云函数的模板。<br>然后在同层级创建三个文件目录，分别为：wsRegister，wsTransmission，wsDelete。<br>如图：</p>
+<img src="/2020/11/14/serverlessWebSocket/2.png" title="文件目录">
+
+<h3 id="修改云函数的功能实现代码块"><a href="#修改云函数的功能实现代码块" class="headerlink" title="修改云函数的功能实现代码块"></a>修改云函数的功能实现代码块</h3><p>wsRegister.index.js:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> COS = <span class="built_in">require</span>(<span class="string">"cos-nodejs-sdk-v5"</span>);</span><br><span class="line"><span class="keyword">const</span> cos = <span class="keyword">new</span> COS(&#123;</span><br><span class="line">  SecretId: process.env.SecretId,</span><br><span class="line">  SecretKey: process.env.SecretKey,</span><br><span class="line">&#125;);</span><br><span class="line">exports.main_handler = <span class="keyword">async</span> (event) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> connectionID = (event.websocket || &#123;&#125;).secConnectionID;</span><br><span class="line">  cos.putObject(</span><br><span class="line">    &#123;</span><br><span class="line">      Bucket: process.env.Bucket <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Region: process.env.Region <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Key: connectionID <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Body: <span class="string">"websocket"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// eslint-disable-next-line moka/lingui-mark</span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"上传bucket成功"</span>, err, data);</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    errNo: <span class="number">0</span>,</span><br><span class="line">    errMsg: <span class="string">"ok"</span>,</span><br><span class="line">    websocket: &#123;</span><br><span class="line">      action: <span class="string">"connecting"</span>,</span><br><span class="line">      secConnectionID: connectionID,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>wsTransmission.index.js：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="built_in">require</span>(<span class="string">"request"</span>);</span><br><span class="line"><span class="keyword">const</span> COS = <span class="built_in">require</span>(<span class="string">"cos-nodejs-sdk-v5"</span>);</span><br><span class="line"><span class="keyword">const</span> cos = <span class="keyword">new</span> COS(&#123;</span><br><span class="line">  SecretId: process.env.SecretId,</span><br><span class="line">  SecretKey: process.env.SecretKey,</span><br><span class="line">&#125;);</span><br><span class="line">exports.main_handler = <span class="keyword">async</span> (event) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> data = (event.websocket || &#123;&#125;).data;</span><br><span class="line">  <span class="keyword">const</span> connectionID = (event.websocket || &#123;&#125;).secConnectionID;</span><br><span class="line">  <span class="keyword">let</span> bucketObject = &#123;&#125;;</span><br><span class="line">  cos.getBucket(</span><br><span class="line">    &#123;</span><br><span class="line">      Bucket: process.env.Bucket <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Region: process.env.Region <span class="comment">/* 必须 */</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">err, res</span>) </span>&#123;</span><br><span class="line">      bucketObject = res;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> bucket <span class="keyword">of</span> bucketObject.Contents || []) &#123;</span><br><span class="line">        <span class="comment">// eslint-disable-next-line no-constant-condition</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span>) &#123;</span><br><span class="line">          <span class="keyword">const</span> bodyData = &#123;</span><br><span class="line">            websocket: &#123;</span><br><span class="line">              action: <span class="string">"data send"</span>,</span><br><span class="line">              secConnectionID: bucket.Key,</span><br><span class="line">              dataType: <span class="string">"text"</span>,</span><br><span class="line">              data: data,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;;</span><br><span class="line">          <span class="keyword">const</span> params = &#123;</span><br><span class="line">            url: process.env.SendbackHost,</span><br><span class="line">            method: <span class="string">"POST"</span>,</span><br><span class="line">            json: <span class="literal">true</span>,</span><br><span class="line">            body: bodyData,</span><br><span class="line">            headers: &#123;</span><br><span class="line">              <span class="string">"Content-type"</span>: <span class="string">"application/json"</span>,</span><br><span class="line">              <span class="string">"Content-Length"</span>: Buffer.byteLength(<span class="built_in">JSON</span>.stringify(bodyData)),</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;;</span><br><span class="line">          request.post(params, (err, _res, body) =&gt; &#123;</span><br><span class="line">            <span class="comment">// eslint-disable-next-line moka/lingui-mark</span></span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"推送成功："</span>, err, <span class="string">"body**"</span>, body);</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="string">"send success"</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>wsDelete.index.js：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="built_in">require</span>(<span class="string">"request"</span>);</span><br><span class="line"><span class="keyword">const</span> COS = <span class="built_in">require</span>(<span class="string">"cos-nodejs-sdk-v5"</span>);</span><br><span class="line"><span class="keyword">const</span> cos = <span class="keyword">new</span> COS(&#123;</span><br><span class="line">  SecretId: process.env.SecretId,</span><br><span class="line">  SecretKey: process.env.SecretKey,</span><br><span class="line">&#125;);</span><br><span class="line">exports.main_handler = <span class="keyword">async</span> (event) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> connectionID = (event.websocket || &#123;&#125;).secConnectionID;</span><br><span class="line">  cos.deleteObject(</span><br><span class="line">    &#123;</span><br><span class="line">      Bucket: process.env.Bucket <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Region: process.env.Region <span class="comment">/* 必须 */</span>,</span><br><span class="line">      Key: connectionID,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> bodyData = &#123;</span><br><span class="line">        websocket: &#123;</span><br><span class="line">          action: <span class="string">"closing"</span>,</span><br><span class="line">          secConnectionID: connectionID,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;;</span><br><span class="line">      request.post(</span><br><span class="line">        &#123;</span><br><span class="line">          url: process.env.SendbackHost,</span><br><span class="line">          method: <span class="string">"POST"</span>,</span><br><span class="line">          json: <span class="literal">true</span>,</span><br><span class="line">          body: bodyData,</span><br><span class="line">          headers: &#123;</span><br><span class="line">            <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span>,</span><br><span class="line">            <span class="string">"Content-Length"</span>: <span class="built_in">JSON</span>.stringify(bodyData).length,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">        (err, res) =&gt; &#123;</span><br><span class="line">          <span class="comment">// eslint-disable-next-line moka/lingui-mark</span></span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">"删除bucket"</span>, err, res);</span><br><span class="line">        &#125;</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> event;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三个云函数的-yml-配置都差不多如下："><a href="#三个云函数的-yml-配置都差不多如下：" class="headerlink" title="三个云函数的 yml 配置都差不多如下："></a>三个云函数的 yml 配置都差不多如下：</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">component:</span> <span class="string">scf</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">wsDelete</span> <span class="comment"># 每个函数要唯一</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下三个名称要一样，否则部署的时候会报不一致的错误</span></span><br><span class="line"><span class="attr">org:</span> <span class="string">moka</span></span><br><span class="line"><span class="attr">app:</span> <span class="string">video-interview-im</span></span><br><span class="line"><span class="attr">stage:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="attr">inputs:</span></span><br><span class="line"><span class="attr">  src:</span> <span class="string">./</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">$&#123;name&#125;-$&#123;app&#125;-$&#123;stage&#125;</span></span><br><span class="line"><span class="attr">  handler:</span> <span class="string">index.main_handler</span> <span class="comment"># 入口，文件目录里的index.js文件里的main_handler方法</span></span><br><span class="line"><span class="attr">  region:</span> <span class="string">ap-beijing</span></span><br><span class="line"><span class="attr">  runtime:</span> <span class="string">Nodejs10.15</span></span><br><span class="line"><span class="attr">  environment:</span></span><br><span class="line">    <span class="comment"># 这是云函数里使用到的的环境变量，具体值定义在.env文件里，然后在这里读取，如果没有定义，云函数调用会报错</span></span><br><span class="line"><span class="attr">    variables:</span></span><br><span class="line"><span class="attr">      SecretId:</span> <span class="string">$&#123;env:TENCENT_SECRET_ID&#125;</span></span><br><span class="line"><span class="attr">      SecretKey:</span> <span class="string">$&#123;env:TENCENT_SECRET_KEY&#125;</span></span><br><span class="line"><span class="attr">      Bucket:</span> <span class="string">$&#123;env:BUCKET&#125;</span></span><br><span class="line"><span class="attr">      Region:</span> <span class="string">$&#123;env:REGION&#125;</span></span><br><span class="line"><span class="attr">      SendbackHost:</span> <span class="string">$&#123;env:SENDBACK_HOST&#125;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>项目根目录需要一个.env 文件，配置隐私信息。SendbackHost 是 API 网关反向推送地址，在腾讯云 API 网关控制台找：</p>
+</blockquote>
+<img src="/2020/11/14/serverlessWebSocket/3.png" title="SendbackHost">
+
+<h3 id="API-网关配置"><a href="#API-网关配置" class="headerlink" title="API 网关配置"></a>API 网关配置</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">component:</span> <span class="string">apigateway</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">websocket-gateway</span></span><br><span class="line"></span><br><span class="line"><span class="attr">org:</span> <span class="string">moka</span></span><br><span class="line"><span class="attr">app:</span> <span class="string">video-interview-im</span></span><br><span class="line"><span class="attr">stage:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="attr">inputs:</span></span><br><span class="line"><span class="attr">  region:</span> <span class="string">ap-beijing</span></span><br><span class="line"><span class="attr">  protocols:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">http</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">https</span></span><br><span class="line"><span class="attr">  serviceName:</span> <span class="string">videoInterviewSocket</span></span><br><span class="line"><span class="attr">  description:</span> <span class="string">websocket</span> <span class="string">api</span> <span class="string">for</span> <span class="string">video</span> <span class="string">interview</span></span><br><span class="line"><span class="attr">  environment:</span> <span class="string">release</span></span><br><span class="line"><span class="attr">  netTypes:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">OUTER</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">INNER</span></span><br><span class="line"><span class="attr">  endpoints:</span></span><br><span class="line">    <span class="comment">#前端类型: WEBSOCKET, 后端类型: SCF</span></span><br><span class="line"><span class="attr">    - path:</span> <span class="string">/vdInterviewWs</span></span><br><span class="line"><span class="attr">      method:</span> <span class="string">GET</span></span><br><span class="line"><span class="attr">      enableCORS:</span> <span class="literal">TRUE</span></span><br><span class="line"><span class="attr">      protocol:</span> <span class="string">WEBSOCKET</span></span><br><span class="line"><span class="attr">      serviceTimeout:</span> <span class="number">600</span></span><br><span class="line"><span class="attr">      function:</span></span><br><span class="line">        <span class="comment"># 这里对应了三个云函数</span></span><br><span class="line"><span class="attr">        transportFunctionName:</span> <span class="string">wsTransmission-video-interview-im-dev</span></span><br><span class="line"><span class="attr">        registerFunctionName:</span> <span class="string">wsRegister-video-interview-im-dev</span></span><br><span class="line"><span class="attr">        cleanupFunctionName:</span> <span class="string">wsDelete-video-interview-im-dev</span></span><br></pre></td></tr></table></figure>
+
+<p>完成了云函数、API 网关的创建，在项目根目录运行 sls deploy –all 就能把所有文件推到腾讯云服务器实现部署，接口就能被外部访问了。可以自行去腾讯云控制台查看推上去的内容。</p>
+<h3 id="最后一步，发起-WebSocket"><a href="#最后一步，发起-WebSocket" class="headerlink" title="最后一步，发起 WebSocket"></a>最后一步，发起 WebSocket</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建websocket并连接</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"ws://service-xxx.bj.apigw.tencentcs.com/release/websocket"</span>;</span><br><span class="line">socket = <span class="keyword">new</span> WebSocket(url);</span><br><span class="line">socket.addEventListener(<span class="string">"open"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"socket is open"</span>);</span><br><span class="line">&#125;);</span><br><span class="line">socket.onmessage = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">this</span>.setState(&#123; <span class="attr">imMessages</span>: [...this.state.imMessages, event.data] &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 展示内容组件</span></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Button &#125; <span class="keyword">from</span> <span class="string">"moka-ui"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">submit</span>(<span class="params">socket</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"submit"</span>);</span><br><span class="line">  <span class="keyword">const</span> val = <span class="built_in">document</span>.getElementById(<span class="string">"textarea"</span>).value;</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">"textarea"</span>).value = <span class="string">""</span>;</span><br><span class="line">  socket.send(val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> (<span class="params">&#123; messages = [], socket = null &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;div&gt;serverless IM test&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;div style=&#123;&#123; display: "flex" &#125;&#125;&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div&gt;</span></span><br><span class="line"><span class="regexp">          &lt;textarea id="textarea" height="200"&gt;&lt;/</span>textarea&gt;</span><br><span class="line">          &lt;Button onClick=&#123;() =&gt; submit(socket)&#125;&gt;Submit&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>div&gt;</span><br><span class="line">        &lt;div id=<span class="string">"content"</span>&gt;</span><br><span class="line">          &#123;messages.map(<span class="function">(<span class="params">message</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> &lt;div&gt;&#123;message&#125;&lt;/div&gt;;</span><br><span class="line">          &#125;)&#125;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过以上操作，一个简单的、无需后端协助的实时消息发送、接收就能实现了。另外，开发过程中，看日志查询很重要，这能加快问题解决！</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h3 id="WebSocket-connection-to-‘ws-service-xxx-bj-apigw-tencentcs-com-release-ws-test’-failed-Unexpected-response-code-400"><a href="#WebSocket-connection-to-‘ws-service-xxx-bj-apigw-tencentcs-com-release-ws-test’-failed-Unexpected-response-code-400" class="headerlink" title="WebSocket connection to ‘ws://service-xxx.bj.apigw.tencentcs.com/release/ws-test’ failed: Unexpected response code: 400"></a><font color="#dd0000">WebSocket connection to ‘ws://service-xxx.bj.apigw.tencentcs.com/release/ws-test’ failed: Unexpected response code: 400</font></h3><p>websocket 没有建立连接，一开始不知道咋回事，后面在腾讯云后台日志发现，线上依赖没有找到，需要在腾讯云后台在线安装依赖，问题就解决了。如果还是连接不上，一定要多看看云函数后台的日志查询，有可能就是函数报错了，或者是某些包没有安装上，导致无法连接</p>
+<h3 id="nodejs-发送-post-请求，报错：-socket-hang-up"><a href="#nodejs-发送-post-请求，报错：-socket-hang-up" class="headerlink" title="nodejs 发送 post 请求，报错： socket hang up"></a><font color="#dd0000">nodejs 发送 post 请求，报错： socket hang up</font></h3><p>解决：在 post 的 headers 加入一下内容<br>headers: {<br>“Content-Type”: “application/json”,<br>“Content-Length”: params.length,<br>}</p>
+<h3 id="body-errNo-1-errMsg-‘parse-request-body-fail’"><a href="#body-errNo-1-errMsg-‘parse-request-body-fail’" class="headerlink" title="body: { errNo: -1, errMsg: ‘parse request body fail’ }"></a><font color="#dd0000">body: { errNo: -1, errMsg: ‘parse request body fail’ }</font></h3><p>我在调试的过程中还碰到这个问题，这个问题一开始觉得参数传的都没有问题啊，调查了很久，发现’Content-Length’传都长度被截断了，长度计算正确就不会有问题<br>解决：”Content-Length”: qs.stringify(params).length</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/13/microFrontendProtect/" rel="next" title="微前端实践之qiankun框架">
+                <i class="fa fa-chevron-left"></i> 微前端实践之qiankun框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#无服务器的概述"><span class="nav-number">1.</span> <span class="nav-text">无服务器的概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-Serverless"><span class="nav-number">2.</span> <span class="nav-text">什么是 Serverless</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特点："><span class="nav-number">2.0.0.1.</span> <span class="nav-text">特点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serverless-的优势"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">Serverless 的优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serverless-的缺点"><span class="nav-number">2.0.0.3.</span> <span class="nav-text">Serverless 的缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serverless-的适用场景"><span class="nav-number">2.0.0.4.</span> <span class="nav-text">Serverless 的适用场景</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-Serverless-Framework"><span class="nav-number">3.</span> <span class="nav-text">什么是 Serverless Framework</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#腾讯云云函数"><span class="nav-number">4.</span> <span class="nav-text">腾讯云云函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Serverless-Framework-和云函数有什么区别？"><span class="nav-number">5.</span> <span class="nav-text">Serverless Framework 和云函数有什么区别？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-serverless"><span class="nav-number">6.</span> <span class="nav-text">安装 serverless</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nodejs-开发调试"><span class="nav-number">7.</span> <span class="nav-text">Nodejs 开发调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#腾讯云-serverless-组件"><span class="nav-number">8.</span> <span class="nav-text">腾讯云 serverless 组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现原理"><span class="nav-number">9.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#具体实现"><span class="nav-number">10.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建云函数"><span class="nav-number">10.0.1.</span> <span class="nav-text">创建云函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改云函数的功能实现代码块"><span class="nav-number">10.0.2.</span> <span class="nav-text">修改云函数的功能实现代码块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三个云函数的-yml-配置都差不多如下："><span class="nav-number">10.0.3.</span> <span class="nav-text">三个云函数的 yml 配置都差不多如下：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API-网关配置"><span class="nav-number">10.0.4.</span> <span class="nav-text">API 网关配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后一步，发起-WebSocket"><span class="nav-number">10.0.5.</span> <span class="nav-text">最后一步，发起 WebSocket</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题"><span class="nav-number">11.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebSocket-connection-to-‘ws-service-xxx-bj-apigw-tencentcs-com-release-ws-test’-failed-Unexpected-response-code-400"><span class="nav-number">11.0.1.</span> <span class="nav-text">WebSocket connection to ‘ws://service-xxx.bj.apigw.tencentcs.com/release/ws-test’ failed: Unexpected response code: 400</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nodejs-发送-post-请求，报错：-socket-hang-up"><span class="nav-number">11.0.2.</span> <span class="nav-text">nodejs 发送 post 请求，报错： socket hang up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#body-errNo-1-errMsg-‘parse-request-body-fail’"><span class="nav-number">11.0.3.</span> <span class="nav-text">body: { errNo: -1, errMsg: ‘parse request body fail’ }</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
