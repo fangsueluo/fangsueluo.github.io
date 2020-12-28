@@ -77,17 +77,17 @@
 
 
 
-<meta name="description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+<meta name="description" content="高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如string | number，只能访问它们中共有的属性或者方法 keyof T索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合 12345let pers">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TypeScript 进阶学习">
 <meta property="og:url" content="http://yoursite.com/2020/12/23/typescript-summary/index.html">
 <meta property="og:site_name" content="fansueluo">
-<meta property="og:description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+<meta property="og:description" content="高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如string | number，只能访问它们中共有的属性或者方法 keyof T索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合 12345let pers">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-28T11:43:22.164Z">
+<meta property="og:updated_time" content="2020-12-28T11:49:43.896Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TypeScript 进阶学习">
-<meta name="twitter:description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+<meta name="twitter:description" content="高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如string | number，只能访问它们中共有的属性或者方法 keyof T索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合 12345let pers">
 
 
 
@@ -285,7 +285,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:43:22+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:49:43+08:00">
                 2020-12-28
               </time>
             
@@ -331,7 +331,11 @@
 
 # react-thunk 使用 -->
 
-<h1 id="type、interface-分别在什么时候使用"><a href="#type、interface-分别在什么时候使用" class="headerlink" title="type、interface 分别在什么时候使用"></a>type、interface 分别在什么时候使用</h1><p>类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。<br>type Container<t> = { value: T };</t></p>
+<!-- # type、interface 分别在什么时候使用
+
+类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。
+type Container<T> = { value: T }; -->
+
 <h1 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h1><h2 id="交叉类型"><a href="#交叉类型" class="headerlink" title="交叉类型"></a>交叉类型</h2><p>操作符：<code>&amp;</code>，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性</p>
 <h2 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h2><p>操作符：<code>|</code>，联合类型必须做类型校验，如<code>string | number</code>，只能访问它们中共有的属性或者方法</p>
 <h2 id="keyof-T"><a href="#keyof-T" class="headerlink" title="keyof T"></a>keyof T</h2><p>索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合</p>
@@ -549,7 +553,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#type、interface-分别在什么时候使用"><span class="nav-number">1.</span> <span class="nav-text">type、interface 分别在什么时候使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高级类型"><span class="nav-number">2.</span> <span class="nav-text">高级类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#交叉类型"><span class="nav-number">2.1.</span> <span class="nav-text">交叉类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#联合类型"><span class="nav-number">2.2.</span> <span class="nav-text">联合类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keyof-T"><span class="nav-number">2.3.</span> <span class="nav-text">keyof T</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型约束-extends"><span class="nav-number">2.4.</span> <span class="nav-text">类型约束 extends</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#映射类型"><span class="nav-number">2.5.</span> <span class="nav-text">映射类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#in关键字"><span class="nav-number">2.5.1.</span> <span class="nav-text">in关键字</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件类型"><span class="nav-number">2.6.</span> <span class="nav-text">条件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TypeScript-内置类型"><span class="nav-number">2.7.</span> <span class="nav-text">TypeScript 内置类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unknown、never-推导"><span class="nav-number">3.</span> <span class="nav-text">unknown、never 推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#unknown"><span class="nav-number">3.1.</span> <span class="nav-text">unknown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#never"><span class="nav-number">3.2.</span> <span class="nav-text">never</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TypeScript-中的问号-与感叹号"><span class="nav-number">4.</span> <span class="nav-text">TypeScript 中的问号 ? 与感叹号 !</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问号"><span class="nav-number">4.1.</span> <span class="nav-text">问号 ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感叹号"><span class="nav-number">4.2.</span> <span class="nav-text">感叹号 !</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高级类型"><span class="nav-number">1.</span> <span class="nav-text">高级类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#交叉类型"><span class="nav-number">1.1.</span> <span class="nav-text">交叉类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#联合类型"><span class="nav-number">1.2.</span> <span class="nav-text">联合类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keyof-T"><span class="nav-number">1.3.</span> <span class="nav-text">keyof T</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型约束-extends"><span class="nav-number">1.4.</span> <span class="nav-text">类型约束 extends</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#映射类型"><span class="nav-number">1.5.</span> <span class="nav-text">映射类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#in关键字"><span class="nav-number">1.5.1.</span> <span class="nav-text">in关键字</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件类型"><span class="nav-number">1.6.</span> <span class="nav-text">条件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TypeScript-内置类型"><span class="nav-number">1.7.</span> <span class="nav-text">TypeScript 内置类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unknown、never-推导"><span class="nav-number">2.</span> <span class="nav-text">unknown、never 推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#unknown"><span class="nav-number">2.1.</span> <span class="nav-text">unknown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#never"><span class="nav-number">2.2.</span> <span class="nav-text">never</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TypeScript-中的问号-与感叹号"><span class="nav-number">3.</span> <span class="nav-text">TypeScript 中的问号 ? 与感叹号 !</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问号"><span class="nav-number">3.1.</span> <span class="nav-text">问号 ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感叹号"><span class="nav-number">3.2.</span> <span class="nav-text">感叹号 !</span></a></li></ol></li></ol></div>
             
 
           </div>

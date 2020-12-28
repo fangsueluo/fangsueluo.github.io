@@ -287,7 +287,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:43:22+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:49:43+08:00">
                 2020-12-28
               </time>
             
@@ -335,7 +335,11 @@
 
 # react-thunk 使用 -->
 
-<h1 id="type、interface-分别在什么时候使用"><a href="#type、interface-分别在什么时候使用" class="headerlink" title="type、interface 分别在什么时候使用"></a>type、interface 分别在什么时候使用</h1><p>类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。<br>type Container<t> = { value: T };</t></p>
+<!-- # type、interface 分别在什么时候使用
+
+类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。
+type Container<T> = { value: T }; -->
+
 <h1 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h1><h2 id="交叉类型"><a href="#交叉类型" class="headerlink" title="交叉类型"></a>交叉类型</h2><p>操作符：<code>&amp;</code>，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性</p>
 <h2 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h2><p>操作符：<code>|</code>，联合类型必须做类型校验，如<code>string | number</code>，只能访问它们中共有的属性或者方法</p>
 <h2 id="keyof-T"><a href="#keyof-T" class="headerlink" title="keyof T"></a>keyof T</h2><p>索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合</p>
