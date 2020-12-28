@@ -84,7 +84,7 @@
 <meta property="og:site_name" content="fansueluo">
 <meta property="og:description" content="高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如string | number，只能访问它们中共有的属性或者方法 keyof T索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合 12345let pers">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-28T11:49:43.896Z">
+<meta property="og:updated_time" content="2020-12-28T12:06:30.635Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TypeScript 进阶学习">
 <meta name="twitter:description" content="高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如string | number，只能访问它们中共有的属性或者方法 keyof T索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合 12345let pers">
@@ -285,7 +285,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:49:43+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T20:06:30+08:00">
                 2020-12-28
               </time>
             
@@ -342,6 +342,8 @@ type Container<T> = { value: T }; -->
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person: Person = &#123;</span><br><span class="line">    name: <span class="string">'aaa'</span>,</span><br><span class="line">    age: <span class="number">35</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> personProps: keyof Person; <span class="comment">// 'name' | 'age'</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="类型约束-extends"><a href="#类型约束-extends" class="headerlink" title="类型约束 extends"></a>类型约束 extends</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type BaseType = string | number | boolean</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表明参数类型T是在string | number | boolean这几种类型中</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copy</span>&lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">BaseType</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
 
 <h2 id="映射类型"><a href="#映射类型" class="headerlink" title="映射类型"></a>映射类型</h2><h3 id="in关键字"><a href="#in关键字" class="headerlink" title="in关键字"></a><code>in</code>关键字</h3><p>在 JS 中我们可以通过 for…in 遍历出一个 object{} 的所有 key 然后进行一些逻辑处理。在 TS 中是否有类似的功能用于遍历 interface{}， <code>{ [ K in P ] : T }</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type Item = &#123; <span class="attr">a</span>: string, <span class="attr">b</span>: number, <span class="attr">c</span>: boolean &#125;;</span><br><span class="line">type Copy = &#123; [K <span class="keyword">in</span> keyof Item]: Item[K] &#125;;</span><br></pre></td></tr></table></figure>
