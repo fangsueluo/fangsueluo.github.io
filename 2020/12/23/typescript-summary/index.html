@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 进阶学习">
+<meta property="og:url" content="http://yoursite.com/2020/12/23/typescript-summary/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-28T11:43:22.164Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript 进阶学习">
+<meta name="twitter:description" content="type、interface 分别在什么时候使用类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。type Container = { value: T }; 高级类型交叉类型操作符：&amp;amp;，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性 联合类型操作符：|，联合类型必须做类型校验，如stri">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/23/typescript-summary/">
+
+
+
+
+
+  <title>TypeScript 进阶学习 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/23/typescript-summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript 进阶学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-23T14:30:22+08:00">
+                2020-12-23
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-12-28T19:43:22+08:00">
+                2020-12-28
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <!--
+要使用第三方包，必须要有声明文件，所以首先要下载相关包：
+@types/react-dom
+@types/react-router-dom
+@types/react-redux
+
+# react-router 使用
+
+# react-redux 使用
+
+# react-thunk 使用 -->
+
+<h1 id="type、interface-分别在什么时候使用"><a href="#type、interface-分别在什么时候使用" class="headerlink" title="type、interface 分别在什么时候使用"></a>type、interface 分别在什么时候使用</h1><p>类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。<br>type Container<t> = { value: T };</t></p>
+<h1 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h1><h2 id="交叉类型"><a href="#交叉类型" class="headerlink" title="交叉类型"></a>交叉类型</h2><p>操作符：<code>&amp;</code>，交叉类型并不是交集，在 Typescript 里其实是并集的意思，即新生成的类型，会拥有所有子类型的特性</p>
+<h2 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h2><p>操作符：<code>|</code>，联合类型必须做类型校验，如<code>string | number</code>，只能访问它们中共有的属性或者方法</p>
+<h2 id="keyof-T"><a href="#keyof-T" class="headerlink" title="keyof T"></a>keyof T</h2><p>索引类型查询操作符。 对于任何类型 T， keyof T 的结果为 T 上已知的公共属性名的联合</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person: Person = &#123;</span><br><span class="line">    name: <span class="string">'aaa'</span>,</span><br><span class="line">    age: <span class="number">35</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> personProps: keyof Person; <span class="comment">// 'name' | 'age'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="类型约束-extends"><a href="#类型约束-extends" class="headerlink" title="类型约束 extends"></a>类型约束 extends</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type BaseType = string | number | boolean</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表明参数类型T是在string | number | boolean这几种类型中</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copy</span>&lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">BaseType</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="映射类型"><a href="#映射类型" class="headerlink" title="映射类型"></a>映射类型</h2><h3 id="in关键字"><a href="#in关键字" class="headerlink" title="in关键字"></a><code>in</code>关键字</h3><p>在 JS 中我们可以通过 for…in 遍历出一个 object{} 的所有 key 然后进行一些逻辑处理。在 TS 中是否有类似的功能用于遍历 interface{}， <code>{ [ K in P ] : T }</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type Item = &#123; <span class="attr">a</span>: string, <span class="attr">b</span>: number, <span class="attr">c</span>: boolean &#125;;</span><br><span class="line">type Copy = &#123; [K <span class="keyword">in</span> keyof Item]: Item[K] &#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>keyof Item</code>得到的是<code>a | b | c</code>，那么<code>type Copy = { [K in keyof Item]: Item[K] }</code>的结果就是<code>type Copy = { a: string, b: number, c: boolean }</code></p>
+<p>映射类型也可以有操作符：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type Coord = &#123;</span><br><span class="line">    readonly [K <span class="keyword">in</span> <span class="string">'x'</span> | <span class="string">'y'</span>]?: number;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 得到</span></span><br><span class="line"><span class="comment">// type Coord = &#123;</span></span><br><span class="line"><span class="comment">//  readonly x?: number;</span></span><br><span class="line"><span class="comment">//  readonly y?: number;</span></span><br><span class="line"><span class="comment">// &#125;;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是映射类型也有局限性，如果类型本省就带有操作符，通过映射之后，无法去除属性上已经存在的装饰符；因此，社区又在 <a href="https://gitee.com/wolfx/TypeScript-Handbook-zh/blob/master/doc/release-notes/TypeScript%202.8.md#%E6%94%B9%E8%BF%9B%E5%AF%B9%E6%98%A0%E5%B0%84%E7%B1%BB%E5%9E%8B%E4%BF%AE%E9%A5%B0%E7%AC%A6%E7%9A%84%E6%8E%A7%E5%88%B6" target="_blank" rel="noopener">TS2.8</a> 又对其进行了完善，可以在上面的装饰符添加 - 或 + 符号：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">type CoordOptional = &#123;</span><br><span class="line">    x?: number;</span><br><span class="line">    readonly y: number;</span><br><span class="line">&#125;;</span><br><span class="line">type Coord = &#123;</span><br><span class="line">    -readonly [K <span class="keyword">in</span> keyof CoordOptional] -?: number;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 得到</span></span><br><span class="line"><span class="comment">// type Coord = &#123;</span></span><br><span class="line"><span class="comment">//  x: number;</span></span><br><span class="line"><span class="comment">//  y: number;</span></span><br><span class="line"><span class="comment">// &#125;;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="条件类型"><a href="#条件类型" class="headerlink" title="条件类型"></a>条件类型</h2><p>联合类型在 extends 时会默认进行如下转换：<br><code>(A | B) extends U ? X : Y ----&gt; (A extends U ? X : Y) | (B extends U ? X : Y)</code><br>分析一个条件类型：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type Diff&lt;T, U&gt; = T extends U ? never : T</span><br><span class="line">type T4 = Diff&lt;<span class="string">'a'</span> | <span class="string">'b'</span> | <span class="string">'c'</span>, <span class="string">'a'</span> | <span class="string">'e'</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>拆解分析：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Diff&lt;<span class="string">'a'</span>, <span class="string">'a'</span> | <span class="string">'e'</span>&gt; | Diff&lt;<span class="string">'b'</span>, <span class="string">'a'</span> | <span class="string">'e'</span>&gt; | Diff&lt;<span class="string">'c'</span>, <span class="string">'a'</span> | <span class="string">'e'</span>&gt;</span><br><span class="line"> ---&gt;</span><br><span class="line"><span class="string">'a'</span> extends  <span class="string">'a'</span> | <span class="string">'e'</span> ? never : <span class="string">'a'</span> ,</span><br><span class="line"><span class="string">'b'</span> extends  <span class="string">'a'</span> | <span class="string">'e'</span> ? never : <span class="string">'b'</span> ,</span><br><span class="line"><span class="string">'c'</span> extends  <span class="string">'a'</span> | <span class="string">'e'</span> ? never : <span class="string">'c'</span></span><br><span class="line"></span><br><span class="line">never | <span class="string">'b'</span> | <span class="string">'c'</span>   ---&gt;</span><br><span class="line"><span class="string">'b'</span> | <span class="string">'c'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="TypeScript-内置类型"><a href="#TypeScript-内置类型" class="headerlink" title="TypeScript 内置类型"></a>TypeScript 内置类型</h2><p>Partial<br>将类型 T 的所有属性标记为可选属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Partial&lt;T&gt; = &#123;</span><br><span class="line">    [P <span class="keyword">in</span> keyof T]?: T[P];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Record&lt;K, T&gt;<br>逐个遍历，映射 K 的类型为 T， 返回{K1: T, K2: T,…}</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Record&lt;K extends keyof any, T&gt; = &#123;</span><br><span class="line">    [P <span class="keyword">in</span> K]: T;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Required<br>Required 将类型 T 的所有属性标记为必选属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Required&lt;T&gt; = &#123;</span><br><span class="line">    [P <span class="keyword">in</span> keyof T]-?: T[P];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Pick&lt;T, K&gt;<br>从 T 中获取属性 K</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Pick&lt;T, K extends keyof T&gt; = &#123;</span><br><span class="line">    [P <span class="keyword">in</span> K]: T[P];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Exclude&lt;T, U&gt;<br>移除 T 中的 U 属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type Exclude&lt;T, U&gt; = T extends U ? never : T;</span><br></pre></td></tr></table></figure>
+
+<p>Extract&lt;T, U&gt;<br>Exclude 的反操作，取 T，U 两者的交集属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type Extract&lt;T, U&gt; = T extends U ? T : never;</span><br></pre></td></tr></table></figure>
+
+<p>NonNullable<br>排除类型 T 的 null | undefined 属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type NonNullable&lt;T&gt; = T extends <span class="literal">null</span> | <span class="literal">undefined</span> ? never : T;</span><br></pre></td></tr></table></figure>
+
+<h1 id="unknown、never-推导"><a href="#unknown、never-推导" class="headerlink" title="unknown、never 推导"></a>unknown、never 推导</h1><h2 id="unknown"><a href="#unknown" class="headerlink" title="unknown"></a>unknown</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// T是任意类型，除了any</span></span><br><span class="line">type x = T | unknown ----&gt; unknown</span><br><span class="line"></span><br><span class="line">type x = any | unknown ----&gt; any</span><br><span class="line"></span><br><span class="line">type x = T &amp; unknown ----&gt; T</span><br><span class="line"></span><br><span class="line">type x = keyof unknown  ----&gt; never</span><br></pre></td></tr></table></figure>
+
+<h2 id="never"><a href="#never" class="headerlink" title="never"></a>never</h2><p>never 类型是 unknown 的子类型</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// T是任意类型</span></span><br><span class="line">type x = T | never ----&gt; T</span><br><span class="line"></span><br><span class="line">type x = T &amp; never ----&gt; never</span><br></pre></td></tr></table></figure>
+
+<h1 id="TypeScript-中的问号-与感叹号"><a href="#TypeScript-中的问号-与感叹号" class="headerlink" title="TypeScript 中的问号 ? 与感叹号 !"></a>TypeScript 中的问号 ? 与感叹号 !</h1><h2 id="问号"><a href="#问号" class="headerlink" title="问号 ?"></a>问号 ?</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里 Error对象定义的stack是可选参数，如果这样写的话编译器会提示</span></span><br><span class="line"><span class="comment">// 出错 TS2532: Object is possibly 'undefined'.</span></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>().stack.split(<span class="string">'\n'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 我们可以添加?操作符，当stack属性存在时，调用 stack.split。若stack不存在，则返回空</span></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>().stack?.split(<span class="string">'\n'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上代码等同以下代码</span></span><br><span class="line"><span class="keyword">const</span> err = <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line"><span class="keyword">return</span> err.stack &amp;&amp; err.stack.split(<span class="string">'\n'</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="感叹号"><a href="#感叹号" class="headerlink" title="感叹号 !"></a>感叹号 !</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 因为接口B里面name被定义为可空的值，但是实际情况是不为空的，那么我们就可以</span></span><br><span class="line"><span class="comment">// 通过在class里面使用！，重新强调了name这个不为空值</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="title">implemented</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">  name!: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface B &#123;</span><br><span class="line">  name?: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下是强制链式调用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里 Error对象定义的stack是可选参数，如果这样写的话编译器会提示</span></span><br><span class="line"><span class="comment">// 出错 TS2532: Object is possibly 'undefined'.</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Error</span>().stack.split(<span class="string">'\n'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 我们确信这个字段100%出现，那么就可以添加！，强调这个字段一定存在</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Error</span>().stack!.split(<span class="string">'\n'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>参考文档：</p>
+<ul>
+<li><a href="https://juejin.cn/post/6844903866073350151" target="_blank" rel="noopener">[译] TypeScript 3.0: unknown 类型</a></li>
+<li><a href="https://juejin.cn/post/6844904066481389575" target="_blank" rel="noopener">TypeScript 的映射类型 Mapped types (e.g. { [P in K]: T[P] })</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/103846208" target="_blank" rel="noopener">typescript 的高级类型</a> -<a href="https://juejin.cn/post/6844903860692074504" target="_blank" rel="noopener">还可以这么玩？超实用 Typescript 内置类型与自定义类型</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/14/serverlessWebSocket/" rel="next" title="Serverless + WebSocket 实时消息推送">
+                <i class="fa fa-chevron-left"></i> Serverless + WebSocket 实时消息推送
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#type、interface-分别在什么时候使用"><span class="nav-number">1.</span> <span class="nav-text">type、interface 分别在什么时候使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高级类型"><span class="nav-number">2.</span> <span class="nav-text">高级类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#交叉类型"><span class="nav-number">2.1.</span> <span class="nav-text">交叉类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#联合类型"><span class="nav-number">2.2.</span> <span class="nav-text">联合类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keyof-T"><span class="nav-number">2.3.</span> <span class="nav-text">keyof T</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型约束-extends"><span class="nav-number">2.4.</span> <span class="nav-text">类型约束 extends</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#映射类型"><span class="nav-number">2.5.</span> <span class="nav-text">映射类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#in关键字"><span class="nav-number">2.5.1.</span> <span class="nav-text">in关键字</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件类型"><span class="nav-number">2.6.</span> <span class="nav-text">条件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TypeScript-内置类型"><span class="nav-number">2.7.</span> <span class="nav-text">TypeScript 内置类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unknown、never-推导"><span class="nav-number">3.</span> <span class="nav-text">unknown、never 推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#unknown"><span class="nav-number">3.1.</span> <span class="nav-text">unknown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#never"><span class="nav-number">3.2.</span> <span class="nav-text">never</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TypeScript-中的问号-与感叹号"><span class="nav-number">4.</span> <span class="nav-text">TypeScript 中的问号 ? 与感叹号 !</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问号"><span class="nav-number">4.1.</span> <span class="nav-text">问号 ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感叹号"><span class="nav-number">4.2.</span> <span class="nav-text">感叹号 !</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
