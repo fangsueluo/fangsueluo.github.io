@@ -240,6 +240,146 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/29/hooks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/03/29/hooks/" itemprop="url">React Hooks深入使用心得</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-29T08:16:05+08:00">
+                2021-03-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-29T19:55:19+08:00">
+                2021-03-29
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="不要类比-class-组件里的生命周期"><a href="#不要类比-class-组件里的生命周期" class="headerlink" title="不要类比 class 组件里的生命周期"></a>不要类比 class 组件里的生命周期</h1><p><code>useEffect(fn, [])</code>只会执行一次，但是不完全等于<code>componentDidMount</code>生命周期。如果将这两种一一对比，对 Effect 的使用就很难提升了，踩坑之后的领悟。</p>
+<h1 id="useEffect-使用"><a href="#useEffect-使用" class="headerlink" title="useEffect 使用"></a>useEffect 使用</h1><ol>
+<li>把不依赖 props 和 state 的函数提到你的组件外面</li>
+<li>把那些仅被 effect 使用的函数放到 effect 里面</li>
+<li>如果这样做了以后，你的 effect 还是需要用到组件内的函数，包括 props 传进来的函数，则使勇敢 useCallback 包一层
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/03/29/hooks/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </li></ol></div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/02/28/remark-work/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1519,143 +1659,6 @@ type Container<T> = { value: T }; -->
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/18/maidian/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="fangsueluo">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fansueluo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/18/maidian/" itemprop="url">前端埋点方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-18T19:41:01+08:00">
-                2020-05-18
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-05-18T21:42:08+08:00">
-                2020-05-18
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="为什么需要埋点"><a href="#为什么需要埋点" class="headerlink" title="为什么需要埋点"></a>为什么需要埋点</h1><p>现在评定产品的好坏、产品使用范围的广度等信息，基本上都是通过数据说明的，而埋点，正是作为这些数据统计的支撑。埋点的意义也就不言而喻了。用户浏览次数统计、交互行为跟踪、商品交易信息收集等，都是埋点的作用。</p>
-<h1 id="埋点有哪些方案"><a href="#埋点有哪些方案" class="headerlink" title="埋点有哪些方案"></a>埋点有哪些方案</h1><p>我了解到的目前市面上的埋点方案，有代码埋点、可视化埋点、无埋点、后端埋点方案。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/05/18/maidian/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1708,7 +1711,7 @@ type Container<T> = { value: T }; -->
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

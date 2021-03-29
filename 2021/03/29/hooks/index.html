@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="不要类比 class 组件里的生命周期useEffect(fn, [])只会执行一次，但是不完全等于componentDidMount生命周期。如果将这两种一一对比，对 Effect 的使用就很难提升了，踩坑之后的领悟。 useEffect 使用 把不依赖 props 和 state 的函数提到你的组件外面 把那些仅被 effect 使用的函数放到 effect 里面 如果这样做了以后，你的 ef">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Hooks深入使用心得">
+<meta property="og:url" content="http://yoursite.com/2021/03/29/hooks/index.html">
+<meta property="og:site_name" content="fansueluo">
+<meta property="og:description" content="不要类比 class 组件里的生命周期useEffect(fn, [])只会执行一次，但是不完全等于componentDidMount生命周期。如果将这两种一一对比，对 Effect 的使用就很难提升了，踩坑之后的领悟。 useEffect 使用 把不依赖 props 和 state 的函数提到你的组件外面 把那些仅被 effect 使用的函数放到 effect 里面 如果这样做了以后，你的 ef">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-03-29T11:55:19.258Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Hooks深入使用心得">
+<meta name="twitter:description" content="不要类比 class 组件里的生命周期useEffect(fn, [])只会执行一次，但是不完全等于componentDidMount生命周期。如果将这两种一一对比，对 Effect 的使用就很难提升了，踩坑之后的领悟。 useEffect 使用 把不依赖 props 和 state 的函数提到你的组件外面 把那些仅被 effect 使用的函数放到 effect 里面 如果这样做了以后，你的 ef">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/03/29/hooks/">
+
+
+
+
+
+  <title>React Hooks深入使用心得 | fansueluo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fansueluo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/29/hooks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fangsueluo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fansueluo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Hooks深入使用心得</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-29T08:16:05+08:00">
+                2021-03-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2021-03-29T19:55:19+08:00">
+                2021-03-29
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="不要类比-class-组件里的生命周期"><a href="#不要类比-class-组件里的生命周期" class="headerlink" title="不要类比 class 组件里的生命周期"></a>不要类比 class 组件里的生命周期</h1><p><code>useEffect(fn, [])</code>只会执行一次，但是不完全等于<code>componentDidMount</code>生命周期。如果将这两种一一对比，对 Effect 的使用就很难提升了，踩坑之后的领悟。</p>
+<h1 id="useEffect-使用"><a href="#useEffect-使用" class="headerlink" title="useEffect 使用"></a>useEffect 使用</h1><ol>
+<li>把不依赖 props 和 state 的函数提到你的组件外面</li>
+<li>把那些仅被 effect 使用的函数放到 effect 里面</li>
+<li>如果这样做了以后，你的 effect 还是需要用到组件内的函数，包括 props 传进来的函数，则使勇敢 useCallback 包一层<a id="more"></a>
+
+</li>
+</ol>
+<h3 id="出现无限重复请求的情况"><a href="#出现无限重复请求的情况" class="headerlink" title="出现无限重复请求的情况"></a>出现无限重复请求的情况</h3><ol>
+<li>useEffect 没有设置第二个参数依赖数组，即<code>useEffect(fn)</code>，则每一次浏览器渲染后都会执行 useEffect，然后在 effect 中更新了状态引起渲染并再次触发 effect；</li>
+<li>设置的依赖数组总是在变化，<code>useEffect(fn, [a, b, c])</code>，比如函数引用会导致无限循环，解决办法是 1）把函数放到 effect 里，2）把函数提到组件外面，3）用 useCallBack 包裹，4）也可以使用 useMemo 处理</li>
+</ol>
+<p><code>Effect拿到的总是定义它的那次渲染中的props和state</code>，如果你觉得在渲染中拿到了一些旧的 props 和 state，且不是你想要的，那么很大可能就是你遗漏里一些 useEffect 的依赖项，导致了 bug，可以通过 <code>eslint-plugin-react-hooks</code> 的<code>exhaustive-deps</code> 规则来提出警告并修改，避免因漏了依赖产的 bug。</p>
+<h1 id="useEffect-执行时机"><a href="#useEffect-执行时机" class="headerlink" title="useEffect 执行时机"></a>useEffect 执行时机</h1><p>浅浅的看下执行过程：<br>/packages/react/src/ReactHooks.js<br>function useEffect</p>
+<ol>
+<li>获取 dispatcher 对象<code>dispatcher = resolveDispatcher()</code><br><code>ReactCurrentDispatcher.current</code>，这个值要么 <code>null | Dispatcher</code>，</li>
+</ol>
+<blockquote>
+<p>Dispatcher 是这么一个对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> type Dispatcher = &#123;|</span><br><span class="line">  getCacheForType?: &lt;T&gt;(resourceType: () =&gt; T) =&gt; T,</span><br><span class="line">  readContext&lt;T&gt;(</span><br><span class="line">    context: ReactContext&lt;T&gt;,</span><br><span class="line">    observedBits: void | number | boolean</span><br><span class="line">  ): T,</span><br><span class="line">  useState&lt;S&gt;(initialState: (() =&gt; S) | S): [S, Dispatch&lt;BasicStateAction&lt;S&gt;&gt;],</span><br><span class="line">  useReducer&lt;S, I, A&gt;(</span><br><span class="line">    reducer: (S, A) =&gt; S,</span><br><span class="line">    initialArg: I,</span><br><span class="line">    init?: (I) =&gt; S</span><br><span class="line">  ): [S, Dispatch&lt;A&gt;],</span><br><span class="line">  useContext&lt;T&gt;(</span><br><span class="line">    context: ReactContext&lt;T&gt;,</span><br><span class="line">    observedBits: void | number | boolean</span><br><span class="line">  ): T,</span><br><span class="line">  useRef&lt;T&gt;(initialValue: T): &#123;| current: T |&#125;,</span><br><span class="line">  useEffect(</span><br><span class="line">    create: () =&gt; (() =&gt; void) | void,</span><br><span class="line">    deps: Array&lt;mixed&gt; | void | null</span><br><span class="line">  ): void,</span><br><span class="line">  useLayoutEffect(</span><br><span class="line">    create: () =&gt; (() =&gt; void) | void,</span><br><span class="line">    deps: Array&lt;mixed&gt; | void | null</span><br><span class="line">  ): void,</span><br><span class="line">  useCallback&lt;T&gt;(callback: T, deps: Array&lt;mixed&gt; | void | null): T,</span><br><span class="line">  useMemo&lt;T&gt;(nextCreate: () =&gt; T, deps: Array&lt;mixed&gt; | void | null): T,</span><br><span class="line">  useImperativeHandle&lt;T&gt;(</span><br><span class="line">    ref: &#123;| current: T | null |&#125; | ((inst: T | null) =&gt; mixed) | null | void,</span><br><span class="line">    create: () =&gt; T,</span><br><span class="line">    deps: Array&lt;mixed&gt; | void | null</span><br><span class="line">  ): void,</span><br><span class="line">  useDebugValue&lt;T&gt;(value: T, formatterFn: ?(value: T) =&gt; mixed): void,</span><br><span class="line">  useDeferredValue&lt;T&gt;(value: T): T,</span><br><span class="line">  useTransition(): [(() =&gt; void) =&gt; void, boolean],</span><br><span class="line">  useMutableSource&lt;Source, Snapshot&gt;(</span><br><span class="line">    source: MutableSource&lt;Source&gt;,</span><br><span class="line">    getSnapshot: MutableSourceGetSnapshotFn&lt;Source, Snapshot&gt;,</span><br><span class="line">    subscribe: MutableSourceSubscribeFn&lt;Source, Snapshot&gt;</span><br><span class="line">  ): Snapshot,</span><br><span class="line">  useOpaqueIdentifier(): any,</span><br><span class="line">  useCacheRefresh?: () =&gt; &lt;T&gt;(?() =&gt; T, ?T) =&gt; void,</span><br><span class="line"></span><br><span class="line">  unstable_isNewReconciler?: boolean,</span><br><span class="line">|&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>执行 useEffect（/packages/react-reconciler/src/ReactFiberHooks.new.js）<br>给当前的 <code>currentHookNameInDev = &#39;useEffect&#39;</code>;赋值</p>
+<blockquote>
+<p><code>let currentHookNameInDev: ?HookType = null;</code></p>
+</blockquote>
+<p>通过 mountHookTypesDev 方法，将当前 hook push 到 hookTypesDev 这个数组里，</p>
+<blockquote>
+<p>hookTypesDev 定义：<code>let hookTypesDev: Array&lt;HookType&gt; | null = null;</code>，这个列表存储初始化 render 时 hook 的调用顺序</p>
+</blockquote>
+</li>
+<li><p>检查 <code>checkDepsAreArrayDev</code> 依赖是否合法</p>
+</li>
+<li><p>执行 <code>mountWorkInProgressHook</code>，返回 <code>workInProgressHook</code></p>
+</li>
+<li><p>设置 <code>currentlyRenderingFiber$1.effectTag |= fiberEffectTag;</code></p>
+<blockquote>
+<p>currentlyRenderingFiber 表示 work-in-progress fiber</p>
+</blockquote>
+</li>
+<li><p>设置 hook.memoizedState = pushEffect(HasEffect | hookEffectTag, create, undefined, nextDeps)</p>
+</li>
+</ol>
+<p>pushEffect 做了什么：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> effect: Effect = &#123;</span><br><span class="line">  tag,</span><br><span class="line">  create,</span><br><span class="line">  destroy,</span><br><span class="line">  deps,</span><br><span class="line">  <span class="comment">// Circular</span></span><br><span class="line">  next: (<span class="literal">null</span>: any),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> componentUpdateQueue: <span class="literal">null</span> | FunctionComponentUpdateQueue = (currentlyRenderingFiber.updateQueue: any);</span><br><span class="line"><span class="keyword">if</span> (componentUpdateQueue === <span class="literal">null</span>) &#123;</span><br><span class="line">  componentUpdateQueue = createFunctionComponentUpdateQueue();</span><br><span class="line">  currentlyRenderingFiber.updateQueue = (componentUpdateQueue: any);</span><br><span class="line">  componentUpdateQueue.lastEffect = effect.next = effect;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> lastEffect = componentUpdateQueue.lastEffect;</span><br><span class="line">  <span class="keyword">if</span> (lastEffect === <span class="literal">null</span>) &#123;</span><br><span class="line">    componentUpdateQueue.lastEffect = effect.next = effect;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> firstEffect = lastEffect.next;</span><br><span class="line">    lastEffect.next = effect;</span><br><span class="line">    effect.next = firstEffect;</span><br><span class="line">    componentUpdateQueue.lastEffect = effect;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> effect;</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>mountIndeterminateComponent 挂载好 jsx 后，将 isRendering=false，然后经过一系列调度、协调（这个过程太长了，没理解透。。。），在 commitHookEffectListMount 执行了 effect 里传进的回调</li>
+</ol>
+<h1 id="自定义-hook-使用"><a href="#自定义-hook-使用" class="headerlink" title="自定义 hook 使用"></a>自定义 hook 使用</h1><p>通过自定义 Hook，可以将组件逻辑提取到可重用的函数中。自定义 Hook 是一个函数，其名称以 “use” 开头，函数内部可以调用其他的 Hook。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> useDataApi = <span class="function">(<span class="params">initialUrl, initialData</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [data, setData] = useState(initialData);</span><br><span class="line">  <span class="keyword">const</span> [url, setUrl] = useState(initialUrl);</span><br><span class="line">  <span class="keyword">const</span> [isLoading, setIsLoading] = useState(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> [isError, setIsError] = useState(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> fetchData = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">      setIsError(<span class="literal">false</span>);</span><br><span class="line">      setIsLoading(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> axios(url);</span><br><span class="line"></span><br><span class="line">        setData(result.data);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        setIsError(<span class="literal">true</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      setIsLoading(<span class="literal">false</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    fetchData();</span><br><span class="line">  &#125;, [url]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> [&#123; data, isLoading, isError &#125;, setUrl];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="函数式组件和类组件的区别"><a href="#函数式组件和类组件的区别" class="headerlink" title="函数式组件和类组件的区别"></a>函数式组件和类组件的区别</h1><p>函数式组件和类组件的最大区别在于：<code>函数式组件捕获了渲染所用的值</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MessageThread</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [message, setMessage] = useState(<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> showMessage = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    alert(<span class="string">"You said: "</span> + message);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> handleSendClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(showMessage, <span class="number">3000</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> handleMessageChange = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    setMessage(e.target.value);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;&gt;</span><br><span class="line">      &lt;input value=&#123;message&#125; onChange=&#123;handleMessageChange&#125; /&gt;</span><br><span class="line">      &lt;button onClick=&#123;handleSendClick&#125;&gt;Send&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我发送一条特定的消息，组件不应该对实际发送的是哪条消息感到困惑。这个函数组件的 message 变量捕获了“属于”返回了被浏览器调用的单击处理函数的那一次渲染。所以当我点击“发送”时 message 被设置为那一刻在 input 中输入的内容。<br>但是如果我们想要读取并不属于这一次特定渲染的，最新的 props 和 state 呢？在函数式组件中，你也可以拥有一个在所有的组件渲染帧中共享的可变变量。它被成为“ref”：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MessageThread</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [message, setMessage] = useState(<span class="string">''</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 保持追踪最新的值。</span></span><br><span class="line">  <span class="keyword">const</span> latestMessage = useRef(<span class="string">''</span>);</span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    latestMessage.current = message;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> showMessage = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    alert(<span class="string">'You said: '</span> + latestMessage.current);</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在处理类似于 intervals 和订阅这样的命令式 API 时，ref 会十分便利</p>
+<h1 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h1><ul>
+<li><a href="https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/" target="_blank" rel="noopener">useEffect 完整指南</a></li>
+<li><a href="https://overreacted.io/zh-hans/how-are-function-components-different-from-classes/" target="_blank" rel="noopener">函数式组件与类组件有何不同？</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/28/remark-work/" rel="next" title="tree、编辑器优化记录">
+                <i class="fa fa-chevron-left"></i> tree、编辑器优化记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="fangsueluo">
+            
+              <p class="site-author-name" itemprop="name">fangsueluo</p>
+              <p class="site-description motion-element" itemprop="description">记录我的前端学习足迹，享受编码带来到乐趣与成绩感。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fangsueluo" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#不要类比-class-组件里的生命周期"><span class="nav-number">1.</span> <span class="nav-text">不要类比 class 组件里的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useEffect-使用"><span class="nav-number">2.</span> <span class="nav-text">useEffect 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#出现无限重复请求的情况"><span class="nav-number">2.0.1.</span> <span class="nav-text">出现无限重复请求的情况</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#useEffect-执行时机"><span class="nav-number">3.</span> <span class="nav-text">useEffect 执行时机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义-hook-使用"><span class="nav-number">4.</span> <span class="nav-text">自定义 hook 使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数式组件和类组件的区别"><span class="nav-number">5.</span> <span class="nav-text">函数式组件和类组件的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章："><span class="nav-number">6.</span> <span class="nav-text">参考文章：</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fangsueluo</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
